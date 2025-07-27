@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务打卡系统</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+            overflow-x: auto;
+        }
+        .tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            background-color: #ecf0f1;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            margin-right: 5px;
+            font-weight: bold;
+            color: #34495e;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            background-color: #3498db;
+            color: white;
+        }
+        .tab:hover:not(.active) {
+            background-color: #bdc3c7;
+        }
+        .tab-content {
+            display: none;
+            padding: 25px;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            background-color: #fff;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #bdc3c7;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        input[type="text"]:focus, input[type="number"]:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .activity-list {
+            margin-top: 25px;
+        }
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        .activity-item:hover {
+            background-color: #f8f9fa;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .activity-actions button {
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+        .activity-actions button.edit {
+            background-color: #f39c12;
+        }
+        .activity-actions button.edit:hover {
+            background-color: #e67e22;
+        }
+        .activity-actions button.delete {
+            background-color: #e74c3c;
+        }
+        .activity-actions button.delete:hover {
+            background-color: #c0392b;
+        }
+        .timer-display {
+            font-size: 4rem;
+            text-align: center;
+            margin: 30px 0;
+            color: #2c3e50;
+            font-family: 'Courier New', monospace;
+        }
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .timer-controls button {
+            font-size: 1.3rem;
+            padding: 12px 25px;
+            min-width: 120px;
+        }
+        .timer-controls button.stop {
+            background-color: #e74c3c;
+        }
+        .timer-controls button.stop:hover {
+            background-color: #c0392b;
+        }
+        .current-activity {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #3498db;
+            font-weight: bold;
+        }
+        .hidden {
+            display: none;
+        }
+        .activity-card {
+            background-color: #ecf0f1;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 5px solid #3498db;
+        }
+        .activity-card:hover {
+            background-color: #dfe6e9;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        .activity-card h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 1.5rem;
+        }
+        .activity-card p {
+            margin-bottom: 0;
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: modalFadeIn 0.3s;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .modal-title {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .sound-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .sound-option:hover {
+            background-color: #ecf0f1;
+        }
+        .sound-option input {
+            margin-right: 10px;
+        }
+        .sound-option label {
+            margin-bottom: 0;
+            cursor: pointer;
+            flex-grow: 1;
+        }
+        .sound-preview {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .sound-preview:hover {
+            background-color: #2980b9;
+        }
+        .tab-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .volume-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        .volume-control label {
+            margin-bottom: 0;
+            font-size: 1.1rem;
+        }
+        .volume-control input[type="range"] {
+            width: 150px;
+        }
+        .music-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .music-controls button {
+            font-size: 1rem;
+            padding: 10px 15px;
+        }
+        .background-music-info {
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏠 家庭上课铃声系统 ⏰</h1>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="openTab('settings')">⚙️ 设置</button>
+            <button class="tab" onclick="openTab('activities')">📝 活动打卡</button>
+            <button class="tab" onclick="openTab('timer')">⏱️ 计时器</button>
+            <button class="tab" onclick="openTab('records')">📊 打卡记录</button>
+        </div>
+        
+        <!-- 设置页 -->
+        <div id="settings" class="tab-content active">
+            <div class="tab-header">
+                <h2>活动设置</h2>
+                <button onclick="openSoundModal()">🔊 选择提示音</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="activity-name">活动名称</label>
+                <input type="text" id="activity-name" placeholder="例如：阅读、写字、跳绳等">
+            </div>
+            <div class="form-group">
+                <label for="activity-duration">持续时间（分钟）</label>
+                <input type="number" id="activity-duration" min="1" value="30">
+            </div>
+            <button onclick="addActivity()">➕ 添加活动</button>
+            
+            <div class="activity-list">
+                <h3>已设置的活动</h3>
+                <div id="activities-list"></div>
+            </div>
+        </div>
+        
+        <!-- 活动打卡页 -->
+        <div id="activities" class="tab-content">
+            <h2>选择活动开始打卡</h2>
+            <div id="activity-cards"></div>
+        </div>
+        
+        <!-- 计时器页 -->
+        <div id="timer" class="tab-content">
+            <div id="timer-default" class="current-activity">
+                请从活动打卡页选择一个活动开始计时
+            </div>
+            <div id="timer-active" class="hidden">
+                <div class="current-activity" id="current-activity-name">当前活动：阅读</div>
+                <div class="timer-display" id="time-display">30:00</div>
+                <div class="timer-controls">
+                    <button id="pause-btn" onclick="toggleTimer()">⏸️ 暂停</button>
+                    <button class="stop" onclick="stopTimer()">⏹️ 停止</button>
+                </div>
+                
+                <!-- 背景音乐控制 -->
+                <div class="volume-control">
+                    <label for="volume">背景音乐音量:</label>
+                    <input type="range" id="volume" min="0" max="1" step="0.1" value="0.5" oninput="changeVolume(this.value)">
+                </div>
+                
+                <div class="music-controls">
+                    <button onclick="playBackgroundMusic()">🎵 播放音乐</button>
+                    <button onclick="pauseBackgroundMusic()">⏸️ 暂停音乐</button>
+                    <button onclick="stopBackgroundMusic()">⏹️ 停止音乐</button>
+                </div>
+                <div class="background-music-info">
+                    当前播放: <span id="current-music-name">无</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 打卡记录页 -->
+        <div id="records" class="tab-content">
+            <h2>打卡记录</h2>
+            <div id="records-list"></div>
+        </div>
+    </div>
+
+    <!-- 提示音选择模态框 -->
+    <div id="sound-modal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title">选择提示音和背景音乐</h3>
+            <h4>提示音选项</h4>
+            <div id="sound-options">
+                <!-- 选项将通过JS动态生成 -->
+            </div>
+            
+            <h4 style="margin-top: 20px;">背景音乐选项</h4>
+            <div id="background-music-options">
+                <!-- 选项将通过JS动态生成 -->
+            </div>
+            
+            <div class="modal-buttons">
+                <button onclick="closeSoundModal()">取消</button>
+                <button onclick="saveSoundPreference()" style="background-color: #2ecc71;">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑活动模态框 -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title">编辑活动</h3>
+            <div class="form-group">
+                <label for="edit-activity-name">活动名称</label>
+                <input type="text" id="edit-activity-name">
+            </div>
+            <div class="form-group">
+                <label for="edit-activity-duration">持续时间（分钟）</label>
+                <input type="number" id="edit-activity-duration" min="1">
+            </div>
+            <input type="hidden" id="edit-activity-id">
+            <div class="modal-buttons">
+                <button onclick="closeEditModal()">取消</button>
+                <button onclick="saveEditedActivity()" style="background-color: #2ecc71;">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 音频元素将通过JS动态创建 -->
+    <div id="audio-container"></div>
+
+    <script>
+        // 存储活动数据
+        let activities = JSON.parse(localStorage.getItem('activities')) || [];
+        // 存储打卡记录
+        let records = JSON.parse(localStorage.getItem('records')) || [];
+        // 计时器变量
+        let timer;
+        let remainingTime = 0;
+        let currentActivity = null;
+        let isPaused = false;
+        // 当前选中的提示音
+        let selectedSound = localStorage.getItem('selectedSound') || 'sound1';
+        // 当前选中的背景音乐
+        let selectedBackgroundMusic = localStorage.getItem('selectedBackgroundMusic') || 'bgmusic1';
+        // 正在编辑的活动ID
+        let editingActivityId = null;
+        // 背景音乐是否正在播放
+        let isBackgroundMusicPlaying = false;
+        // 背景音乐音量
+        let backgroundMusicVolume = parseFloat(localStorage.getItem('backgroundMusicVolume')) || 0.5;
+        
+        // 提示音选项
+        const soundOptions = [
+            { id: 'sound1', name: '经典铃声', url: 'https://www.soundjay.com/buttons/sounds/button-09.mp3' },
+            { id: 'sound2', name: '清脆铃声', url: 'https://www.soundjay.com/buttons/sounds/button-10.mp3' },
+            { id: 'sound3', name: '学校铃声', url: 'https://www.soundjay.com/buttons/sounds/button-21.mp3' },
+            { id: 'sound4', name: '闹钟声', url: 'https://www.soundjay.com/buttons/sounds/button-22.mp3' },
+            { id: 'sound5', name: '蜂鸣声', url: 'https://www.soundjay.com/buttons/sounds/button-23.mp3' }
+        ];
+        
+        // 背景音乐选项
+        const backgroundMusicOptions = [
+            { id: 'bgmusic1', name: '轻松钢琴曲', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
+            { id: 'bgmusic2', name: '自然白噪音', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
+            { id: 'bgmusic3', name: '古典音乐', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
+            { id: 'bgmusic4', name: '冥想音乐', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' }
+        ];
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            renderActivitiesList();
+            renderActivityCards();
+            renderRecords();
+            renderSoundOptions();
+            renderBackgroundMusicOptions();
+            createAudioElements();
+            
+            // 初始化音量控制
+            document.getElementById('volume').value = backgroundMusicVolume;
+        });
+        
+        // 创建音频元素
+        function createAudioElements() {
+            const container = document.getElementById('audio-container');
+            container.innerHTML = '';
+            
+            // 创建提示音元素
+            soundOptions.forEach(sound => {
+                const audio = document.createElement('audio');
+                audio.id = `audio-${sound.id}`;
+                audio.src = sound.url;
+                audio.preload = 'auto';
+                container.appendChild(audio);
+            });
+            
+            // 创建背景音乐元素
+            backgroundMusicOptions.forEach(music => {
+                const audio = document.createElement('audio');
+                audio.id = `audio-${music.id}`;
+                audio.src = music.url;
+                audio.preload = 'auto';
+                audio.loop = true;
+                audio.volume = backgroundMusicVolume;
+                container.appendChild(audio);
+            });
+        }
+        
+        // 切换标签页
+        function openTab(tabName) {
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            const tabs = document.getElementsByClassName('tab');
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+        
+        // 添加活动
+        function addActivity() {
+            const nameInput = document.getElementById('activity-name');
+            const durationInput = document.getElementById('activity-duration');
+            
+            const name = nameInput.value.trim();
+            const duration = parseInt(durationInput.value);
+            
+            if (!name) {
+                alert('请输入活动名称');
+                return;
+            }
+            
+            if (isNaN(duration) || duration <= 0) {
+                alert('请输入有效的持续时间');
+                return;
+            }
+            
+            const activity = {
+                id: Date.now(),
+                name: name,
+                duration: duration
+            };
+            
+            activities.push(activity);
+            saveActivities();
+            
+            nameInput.value = '';
+            durationInput.value = '30';
+            
+            renderActivitiesList();
+            renderActivityCards();
+        }
+        
+        // 删除活动
+        function deleteActivity(id) {
+            if (confirm('确定要删除这个活动吗？')) {
+                activities = activities.filter(activity => activity.id !== id);
+                saveActivities();
+                renderActivitiesList();
+                renderActivityCards();
+            }
+        }
+        
+        // 打开编辑活动模态框
+        function openEditModal(id) {
+            const activity = activities.find(a => a.id === id);
+            if (!activity) return;
+            
+            document.getElementById('edit-activity-name').value = activity.name;
+            document.getElementById('edit-activity-duration').value = activity.duration;
+            document.getElementById('edit-activity-id').value = id;
+            editingActivityId = id;
+            
+            document.getElementById('edit-modal').style.display = 'flex';
+        }
+        
+        // 关闭编辑活动模态框
+        function closeEditModal() {
+            document.getElementById('edit-modal').style.display = 'none';
+            editingActivityId = null;
+        }
+        
+        // 保存编辑后的活动
+        function saveEditedActivity() {
+            const id = parseInt(document.getElementById('edit-activity-id').value);
+            const name = document.getElementById('edit-activity-name').value.trim();
+            const duration = parseInt(document.getElementById('edit-activity-duration').value);
+            
+            if (!name) {
+                alert('请输入活动名称');
+                return;
+            }
+            
+            if (isNaN(duration) || duration <= 0) {
+                alert('请输入有效的持续时间');
+                return;
+            }
+            
+            const index = activities.findIndex(a => a.id === id);
+            if (index !== -1) {
+                activities[index] = {
+                    id: id,
+                    name: name,
+                    duration: duration
+                };
+                
+                saveActivities();
+                renderActivitiesList();
+                renderActivityCards();
+                closeEditModal();
+            }
+        }
+        
+        // 保存活动数据
+        function saveActivities() {
+            localStorage.setItem('activities', JSON.stringify(activities));
+        }
+        
+        // 渲染活动列表（设置页）
+        function renderActivitiesList() {
+            const listElement = document.getElementById('activities-list');
+            listElement.innerHTML = '';
+            
+            if (activities.length === 0) {
+                listElement.innerHTML = '<p style="color:#7f8c8d;">暂无活动，请添加活动</p>';
+                return;
+            }
+            
+            activities.forEach(activity => {
+                const item = document.createElement('div');
+                item.className = 'activity-item';
+                item.innerHTML = `
+                    <div>
+                        <strong>${activity.name}</strong> - ${activity.duration}分钟
+                    </div>
+                    <div class="activity-actions">
+                        <button class="edit" onclick="openEditModal(${activity.id})">✏️ 编辑</button>
+                        <button class="delete" onclick="deleteActivity(${activity.id})">🗑️ 删除</button>
+                    </div>
+                `;
+                listElement.appendChild(item);
+            });
+        }
+        
+        // 渲染活动卡片（打卡页）
+        function renderActivityCards() {
+            const cardsElement = document.getElementById('activity-cards');
+            cardsElement.innerHTML = '';
+            
+            if (activities.length === 0) {
+                cardsElement.innerHTML = '<p style="color:#7f8c8d;">暂无活动，请先到设置页添加活动</p>';
+                return;
+            }
+            
+            activities.forEach(activity => {
+                const card = document.createElement('div');
+                card.className = 'activity-card';
+                card.innerHTML = `
+                    <h3>${activity.name}</h3>
+                    <p>持续时间: ${activity.duration}分钟</p>
+                `;
+                card.addEventListener('click', () => startActivity(activity));
+                cardsElement.appendChild(card);
+            });
+        }
+        
+        // 开始活动计时
+        function startActivity(activity) {
+            currentActivity = activity;
+            remainingTime = activity.duration * 60; // 转换为秒
+            
+            document.getElementById('timer-default').classList.add('hidden');
+            document.getElementById('timer-active').classList.remove('hidden');
+            document.getElementById('current-activity-name').textContent = `当前活动：${activity.name}`;
+            
+            updateTimerDisplay();
+            startTimer();
+            
+            // 自动播放背景音乐
+            playBackgroundMusic();
+            
+            openTab('timer');
+        }
+        
+        // 更新计时器显示
+        function updateTimerDisplay() {
+            const minutes = Math.floor(remainingTime / 60);
+            const seconds = remainingTime % 60;
+            document.getElementById('time-display').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // 开始计时器
+        function startTimer() {
+            if (timer) clearInterval(timer);
+            isPaused = false;
+            document.getElementById('pause-btn').textContent = '⏸️ 暂停';
+            
+            timer = setInterval(() => {
+                if (!isPaused) {
+                    remainingTime--;
+                    updateTimerDisplay();
+                    
+                    if (remainingTime <= 0) {
+                        clearInterval(timer);
+                        timer = null;
+                        playAlarm();
+                        addRecord(currentActivity);
+                        renderRecords();
+                        
+                        // 5秒后自动停止
+                        setTimeout(() => {
+                            stopTimer();
+                            stopBackgroundMusic();
+                        }, 5000);
+                    }
+                }
+            }, 1000);
+        }
+        
+        // 暂停/继续计时器
+        function toggleTimer() {
+            isPaused = !isPaused;
+            document.getElementById('pause-btn').textContent = isPaused ? '▶️ 继续' : '⏸️ 暂停';
+            
+            // 同时暂停/继续背景音乐
+            if (isPaused) {
+                pauseBackgroundMusic();
+            } else {
+                playBackgroundMusic();
+            }
+        }
+        
+        // 停止计时器
+        function stopTimer() {
+            if (timer) clearInterval(timer);
+            timer = null;
+            currentActivity = null;
+            
+            document.getElementById('timer-active').classList.add('hidden');
+            document.getElementById('timer-default').classList.remove('hidden');
+        }
+        
+        // 播放提示音
+        function playAlarm() {
+            const audio = document.getElementById(`audio-${selectedSound}`);
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play();
+            }
+        }
+        
+        // 播放背景音乐
+        function playBackgroundMusic() {
+            if (currentActivity) {
+                const audio = document.getElementById(`audio-${selectedBackgroundMusic}`);
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.volume = backgroundMusicVolume;
+                    audio.play();
+                    isBackgroundMusicPlaying = true;
+                    updateCurrentMusicName();
+                }
+            }
+        }
+        
+        // 暂停背景音乐
+        function pauseBackgroundMusic() {
+            const audio = document.getElementById(`audio-${selectedBackgroundMusic}`);
+            if (audio) {
+                audio.pause();
+                isBackgroundMusicPlaying = false;
+            }
+        }
+        
+        // 停止背景音乐
+        function stopBackgroundMusic() {
+            const audio = document.getElementById(`audio-${selectedBackgroundMusic}`);
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0;
+                isBackgroundMusicPlaying = false;
+                document.getElementById('current-music-name').textContent = '无';
+            }
+        }
+        
+        // 改变音量
+        function changeVolume(volume) {
+            backgroundMusicVolume = parseFloat(volume);
+            localStorage.setItem('backgroundMusicVolume', backgroundMusicVolume);
+            
+            const audio = document.getElementById(`audio-${selectedBackgroundMusic}`);
+            if (audio) {
+                audio.volume = backgroundMusicVolume;
+            }
+        }
+        
+        // 更新当前播放音乐名称
+        function updateCurrentMusicName() {
+            const music = backgroundMusicOptions.find(m => m.id === selectedBackgroundMusic);
+            if (music) {
+                document.getElementById('current-music-name').textContent = music.name;
+            }
+        }
+        
+        // 添加打卡记录
+        function addRecord(activity) {
+            const record = {
+                id: Date.now(),
+                activityName: activity.name,
+                duration: activity.duration,
+                date: new Date().toLocaleString()
+            };
+            
+            records.unshift(record);
+            localStorage.setItem('records', JSON.stringify(records));
+        }
+        
+        // 渲染打卡记录
+        function renderRecords() {
+            const recordsElement = document.getElementById('records-list');
+            recordsElement.innerHTML = '';
+            
+            if (records.length === 0) {
+                recordsElement.innerHTML = '<p style="color:#7f8c8d;">暂无打卡记录</p>';
+                return;
+            }
+            
+            records.forEach(record => {
+                const item = document.createElement('div');
+                item.className = 'activity-item';
+                item.innerHTML = `
+                    <div>
+                        <strong>${record.activityName}</strong> - ${record.duration}分钟
+                    </div>
+                    <div>
+                        ${record.date}
+                    </div>
+                `;
+                recordsElement.appendChild(item);
+            });
+        }
+        
+        // 打开提示音选择模态框
+        function openSoundModal() {
+            document.getElementById('sound-modal').style.display = 'flex';
+        }
+        
+        // 关闭提示音选择模态框
+        function closeSoundModal() {
+            document.getElementById('sound-modal').style.display = 'none';
+        }
+        
+        // 渲染提示音选项
+        function renderSoundOptions() {
+            const optionsContainer = document.getElementById('sound-options');
+            optionsContainer.innerHTML = '';
+            
+            soundOptions.forEach(sound => {
+                const option = document.createElement('div');
+                option.className = 'sound-option';
+                option.innerHTML = `
+                    <input type="radio" id="sound-${sound.id}" name="sound" value="${sound.id}" 
+                        ${selectedSound === sound.id ? 'checked' : ''}>
+                    <label for="sound-${sound.id}">${sound.name}</label>
+                    <button class="sound-preview" onclick="previewSound('${sound.id}')">试听</button>
+                `;
+                optionsContainer.appendChild(option);
+            });
+        }
+        
+        // 渲染背景音乐选项
+        function renderBackgroundMusicOptions() {
+            const optionsContainer = document.getElementById('background-music-options');
+            optionsContainer.innerHTML = '';
+            
+            backgroundMusicOptions.forEach(music => {
+                const option = document.createElement('div');
+                option.className = 'sound-option';
+                option.innerHTML = `
+                    <input type="radio" id="music-${music.id}" name="backgroundMusic" value="${music.id}" 
+                        ${selectedBackgroundMusic === music.id ? 'checked' : ''}>
+                    <label for="music-${music.id}">${music.name}</label>
+                    <button class="sound-preview" onclick="previewSound('${music.id}')">试听</button>
+                `;
+                optionsContainer.appendChild(option);
+            });
+        }
+        
+        // 试听声音
+        function previewSound(soundId) {
+            const audio = document.getElementById(`audio-${soundId}`);
+            if (audio) {
+                audio.currentTime = 0;
+                audio.volume = soundId.startsWith('bg') ? backgroundMusicVolume : 1.0;
+                audio.play();
+            }
+        }
+        
+        // 保存声音偏好
+        function saveSoundPreference() {
+            const selectedSoundElement = document.querySelector('input[name="sound"]:checked');
+            const selectedMusicElement = document.querySelector('input[name="backgroundMusic"]:checked');
+            
+            if (selectedSoundElement) {
+                selectedSound = selectedSoundElement.value;
+                localStorage.setItem('selectedSound', selectedSound);
+            }
+            
+            if (selectedMusicElement) {
+                selectedBackgroundMusic = selectedMusicElement.value;
+                localStorage.setItem('selectedBackgroundMusic', selectedBackgroundMusic);
+                
+                // 如果正在播放音乐，切换到新的音乐
+                if (isBackgroundMusicPlaying) {
+                    stopBackgroundMusic();
+                    playBackgroundMusic();
+                }
+            }
+            
+            closeSoundModal();
+        }
+    </script>
+</body>
+</html>
