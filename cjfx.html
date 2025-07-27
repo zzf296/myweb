@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雷波三峡中学2025年高一年级期末州统测成绩统计分析</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #0056b3;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .upload-section {
+            text-align: center;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .upload-section input[type="file"] {
+            margin-top: 10px;
+        }
+
+        .settings-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f1f3f5;
+        }
+
+        .settings-section h3 {
+            margin-top: 0;
+            border-bottom: none;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .settings-grid label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .settings-grid input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .analysis-section {
+            display: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #e9ecef;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f1f3f5;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .download-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .summary-row {
+            background-color: #e6f7ff;
+            font-weight: bold;
+        }
+
+        .subject-type-selector {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .subject-type-selector label {
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .export-table {
+            font-family: Arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .export-table th {
+            background-color: #0056b3;
+            color: white;
+            font-weight: bold;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .export-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .export-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .export-table tr:hover {
+            background-color: #e6f7ff;
+        }
+
+        .export-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0056b3;
+            margin: 20px 0 10px 0;
+        }
+
+        @media print {
+            body {
+                background-color: white;
+                margin: 0;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                width: 100%;
+                margin: 0;
+                padding: 10px;
+            }
+
+            .btn {
+                display: none !important;
+            }
+        }
+
+        /* PDF导出按钮特殊样式 */
+        .download-section .btn:nth-last-child(1) {
+            background-color: #dc3545;
+            margin-left: 10px;
+        }
+
+        .download-section .btn:nth-last-child(1):hover {
+            background-color: #bb2d3b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>雷波三峡中学2025年高一年级期末州统测成绩统计分析</h1>
+
+        <div class="upload-section">
+            <h2>上传成绩表</h2>
+            <p>请上传成绩表文件进行统计分析。</p>
+            <input type="file" id="fileInput" accept=".xlsx, .xls">
+            <button class="btn" onclick="processFile()">开始分析</button>
+        </div>
+        <!-- 教师任课表模板下载 -->
+        <div class="upload-section" style="margin-top:30px;">
+            <h2>2. 上传教师任课表（自动匹配班主任/任课教师）</h2>
+            <p>请先下载模板，按格式填写后再上传。</p>
+            <button class="btn" onclick="downloadTeacherTemplate()">📥 下载教师任课表模板</button>
+            <input type="file" id="teacherFileInput" accept=".xlsx,.xls" style="margin-left:10px;">
+            <button class="btn" onclick="processTeacherFile()">开始导入</button>
+        </div>
+        <div class="settings-section" id="settingsSection" style="display: none;">
+            <div class="subject-type-selector">
+                <label>科目类型：</label>
+                <label><input type="radio" name="subjectType" value="physics" checked> 物理类</label>
+                <label><input type="radio" name="subjectType" value="history"> 历史类</label>
+            </div>
+
+            <h3>分数线设置</h3>
+            <p>请在下方手动设置特控线和本科线，然后点击"应用设置并分析"。</p>
+
+            <div id="physicsSettings">
+                <h4>物理类分数线</h4>
+                <div class="settings-grid">
+                    <div>
+                        <label for="setTcLine">特控线 (总分)</label>
+                        <input type="number" id="setTcLine" value="490">
+                    </div>
+                    <div>
+                        <label for="setBkLine">本科线 (总分)</label>
+                        <input type="number" id="setBkLine" value="372">
+                    </div>
+                    <div>
+                        <label for="setChineseTc">语文特控线</label>
+                        <input type="number" id="setChineseTc" value="101">
+                    </div>
+                    <div>
+                        <label for="setChineseBk">语文本科线</label>
+                        <input type="number" id="setChineseBk" value="89">
+                    </div>
+                    <div>
+                        <label for="setMathTc">数学特控线</label>
+                        <input type="number" id="setMathTc" value="91">
+                    </div>
+                    <div>
+                        <label for="setMathBk">数学本科线</label>
+                        <input type="number" id="setMathBk" value="56">
+                    </div>
+                    <div>
+                        <label for="setEnglishTc">英语特控线</label>
+                        <input type="number" id="setEnglishTc" value="98">
+                    </div>
+                    <div>
+                        <label for="setEnglishBk">英语本科线</label>
+                        <input type="number" id="setEnglishBk" value="60">
+                    </div>
+                    <div>
+                        <label for="setPhysicsTc">物理特控线</label>
+                        <input type="number" id="setPhysicsTc" value="48">
+                    </div>
+                    <div>
+                        <label for="setPhysicsBk">物理本科线</label>
+                        <input type="number" id="setPhysicsBk" value="25">
+                    </div>
+                    <div>
+                        <label for="setChemistryTc">化学特控线</label>
+                        <input type="number" id="setChemistryTc" value="83">
+                    </div>
+                    <div>
+                        <label for="setChemistryBk">化学本科线</label>
+                        <input type="number" id="setChemistryBk" value="67">
+                    </div>
+                    <div>
+                        <label for="setBiologyTc">生物特控线</label>
+                        <input type="number" id="setBiologyTc" value="85">
+                    </div>
+                    <div>
+                        <label for="setBiologyBk">生物本科线</label>
+                        <input type="number" id="setBiologyBk" value="70">
+                    </div>
+                    <div>
+                        <label for="setPoliticsTc">政治特控线</label>
+                        <input type="number" id="setPoliticsTc" value="87">
+                    </div>
+                    <div>
+                        <label for="setPoliticsBk">政治本科线</label>
+                        <input type="number" id="setPoliticsBk" value="76">
+                    </div>
+                    <div>
+                        <label for="setGeographyTc">地理特控线</label>
+                        <input type="number" id="setGeographyTc" value="86">
+                    </div>
+                    <div>
+                        <label for="setGeographyBk">地理本科线</label>
+                        <input type="number" id="setGeographyBk" value="72">
+                    </div>
+                </div>
+            </div>
+
+            <div id="historySettings" style="display: none;">
+                <h4>历史类分数线</h4>
+                <div class="settings-grid">
+                    <div>
+                        <label for="setHistoryTcLine">特控线 (总分)</label>
+                        <input type="number" id="setHistoryTcLine" value="485">
+                    </div>
+                    <div>
+                        <label for="setHistoryBkLine">本科线 (总分)</label>
+                        <input type="number" id="setHistoryBkLine" value="406">
+                    </div>
+                    <div>
+                        <label for="setHistoryChineseTc">语文特控线</label>
+                        <input type="number" id="setHistoryChineseTc" value="103">
+                    </div>
+                    <div>
+                        <label for="setHistoryChineseBk">语文本科线</label>
+                        <input type="number" id="setHistoryChineseBk" value="94">
+                    </div>
+                    <div>
+                        <label for="setHistoryMathTc">数学特控线</label>
+                        <input type="number" id="setHistoryMathTc" value="78">
+                    </div>
+                    <div>
+                        <label for="setHistoryMathBk">数学本科线</label>
+                        <input type="number" id="setHistoryMathBk" value="50">
+                    </div>
+                    <div>
+                        <label for="setHistoryEnglishTc">英语特控线</label>
+                        <input type="number" id="setHistoryEnglishTc" value="97">
+                    </div>
+                    <div>
+                        <label for="setHistoryEnglishBk">英语本科线</label>
+                        <input type="number" id="setHistoryEnglishBk" value="68">
+                    </div>
+                    <div>
+                        <label for="setHistoryHistoryTc">历史特控线</label>
+                        <input type="number" id="setHistoryHistoryTc" value="59">
+                    </div>
+                    <div>
+                        <label for="setHistoryHistoryBk">历史本科线</label>
+                        <input type="number" id="setHistoryHistoryBk" value="51">
+                    </div>
+                    <div>
+                        <label for="setHistoryPoliticsTc">政治特控线</label>
+                        <input type="number" id="setHistoryPoliticsTc" value="89">
+                    </div>
+                    <div>
+                        <label for="setHistoryPoliticsBk">政治本科线</label>
+                        <input type="number" id="setHistoryPoliticsBk" value="79">
+                    </div>
+                    <div>
+                        <label for="setHistoryGeographyTc">地理特控线</label>
+                        <input type="number" id="setHistoryGeographyTc" value="88">
+                    </div>
+                    <div>
+                        <label for="setHistoryGeographyBk">地理本科线</label>
+                        <input type="number" id="setHistoryGeographyBk" value="79">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn" onclick="applySettingsAndAnalyze()">应用设置并分析</button>
+        </div>
+
+        <div id="analysisContent" class="analysis-section">
+            <div class="subject-type-selector">
+                <label>当前分析科目类型：</label>
+                <span id="currentSubjectTypeDisplay">物理类</span>
+            </div>
+
+            <!-- 总体情况表 -->
+            <h2>1. 总体情况表</h2>
+            <div id="overallTableContainer"></div>
+
+            <!-- 分班级综合分析 -->
+            <h2>2. 分班级综合分析</h2>
+            <div id="classAnalysisContainer"></div>
+
+            <!-- 特控线上线分析 -->
+            <h2>3. 特控线上线分析</h2>
+            <div id="tcAnalysisContainer"></div>
+
+            <!-- 本科线上线分析 -->
+            <h2>4. 本科线上线分析</h2>
+            <div id="bkAnalysisContainer"></div>
+
+            <!-- 总分分数段统计 -->
+            <h2>5. 总分分数段统计</h2>
+            <div id="scoreSegmentContainer"></div>
+
+            <!-- 6. 各班成绩分析表 -->
+            <h2>6. 各班成绩分析表</h2>
+            <div id="classSubjectTableContainer"></div>
+
+            <div class="download-section">
+                <button class="btn" onclick="downloadAllAnalysis()">全部数据一键导出</button>
+                <button class="btn" onclick="exportToPDF()">导出PDF报告</button>
+                <button class="btn" onclick="downloadTable('overallTableContainer', '总体情况表')">下载总体情况表</button>
+                <button class="btn" onclick="downloadClassSubjectTablesStyled()">
+                    下载各班成绩分析表（带样式）
+                </button>
+                <button class="btn" onclick="downloadClassSubjectTables()">下载各班成绩分析表</button>
+                <button class="btn" onclick="downloadTable('classAnalysisContainer', '分班级综合分析')">下载分班级综合分析</button>
+                <button class="btn" onclick="downloadTable('tcAnalysisContainer', '特控线上线分析')">下载特控线上线分析</button>
+                <button class="btn" onclick="downloadTable('bkAnalysisContainer', '本科线上线分析')">下载本科线上线分析</button>
+                <button class="btn" onclick="downloadTable('scoreSegmentContainer', '总分分数段统计')">下载总分分数段统计</button>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. 支持样式的版本 -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script> <!-- 在<head>标签内添加 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        let studentData = [];
+        let settings = {};
+        let currentSubjectType = 'physics';
+        const physicsSubjects = ['语文', '数学', '英语', '物理', '化学', '生物', '政治', '地理'];
+        const historySubjects = ['语文', '数学', '英语', '历史', '政治', '地理'];
+        const fullMarks = {
+            语文: 150, 数学: 150, 英语: 150, 物理: 100, 化学: 100,
+            生物: 100, 政治: 100, 地理: 100, 历史: 100
+        };
+        // 在 let currentSubjectType = 'physics'; 下方添加
+        let subjectTypeText = '物理类';   // 全局变量，供所有下载函数使用
+        // 切换科目类型设置显示
+        document.querySelectorAll('input[name="subjectType"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                currentSubjectType = this.value;
+                document.getElementById('physicsSettings').style.display = this.value === 'physics' ? 'block' : 'none';
+                document.getElementById('historySettings').style.display = this.value === 'history' ? 'block' : 'none';
+            });
+        });
+
+        function processFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('请先选择文件！');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: null });
+
+                    if (jsonData.length === 0) {
+                        alert('文件没有数据！');
+                        return;
+                    }
+
+                    const headers = Object.keys(jsonData[0]);
+
+                    studentData = jsonData.map(row => {
+                        let student = {};
+                        headers.forEach(header => {
+                            const value = row[header];
+                            student[header] = typeof value === 'number' ? value :
+                                !isNaN(parseFloat(value)) ? parseFloat(value) :
+                                    value;
+                        });
+
+                        // 计算总分（四舍五入取整）
+                        const subjects = currentSubjectType === 'physics' ? physicsSubjects : historySubjects;
+                        let total = 0;
+                        subjects.forEach(subject => {
+                            if (student[subject] && !isNaN(student[subject])) {
+                                total += Number(student[subject]);
+                            }
+                        });
+                        student['总分'] = Math.round(total);  // 四舍五入取整
+
+                        return student;
+                    }).filter(s => s['姓名']);
+                    // normalizeClassNames();   // ← 关键：统一班级名称
+
+                    document.getElementById('settingsSection').style.display = 'block';
+                    alert(`成功读取 ${studentData.length} 条学生记录！请设置分数线后进行分析。`);
+                } catch (e) {
+                    alert('文件解析错误: ' + e.message);
+                    console.error(e);
+                }
+            };
+            reader.onerror = function () {
+                alert('文件读取失败！');
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+
+        function applySettingsAndAnalyze() {
+            // 获取当前科目类型
+            currentSubjectType = document.querySelector('input[name="subjectType"]:checked').value;
+            subjectTypeText = currentSubjectType === 'physics' ? '物理类' : '历史类';
+            document.getElementById('currentSubjectTypeDisplay').textContent = currentSubjectType === 'physics' ? '物理类' : '历史类';
+
+            // 获取设置值
+            if (currentSubjectType === 'physics') {
+                settings = {
+                    tcTotal: parseFloat(document.getElementById('setTcLine').value),
+                    bkTotal: parseFloat(document.getElementById('setBkLine').value),
+                    tc: {
+                        语文: parseFloat(document.getElementById('setChineseTc').value),
+                        数学: parseFloat(document.getElementById('setMathTc').value),
+                        英语: parseFloat(document.getElementById('setEnglishTc').value),
+                        物理: parseFloat(document.getElementById('setPhysicsTc').value),
+                        化学: parseFloat(document.getElementById('setChemistryTc').value),
+                        生物: parseFloat(document.getElementById('setBiologyTc').value),
+                        政治: parseFloat(document.getElementById('setPoliticsTc').value),
+                        地理: parseFloat(document.getElementById('setGeographyTc').value),
+                    },
+                    bk: {
+                        语文: parseFloat(document.getElementById('setChineseBk').value),
+                        数学: parseFloat(document.getElementById('setMathBk').value),
+                        英语: parseFloat(document.getElementById('setEnglishBk').value),
+                        物理: parseFloat(document.getElementById('setPhysicsBk').value),
+                        化学: parseFloat(document.getElementById('setChemistryBk').value),
+                        生物: parseFloat(document.getElementById('setBiologyBk').value),
+                        政治: parseFloat(document.getElementById('setPoliticsBk').value),
+                        地理: parseFloat(document.getElementById('setGeographyBk').value),
+                    },
+                    subjects: physicsSubjects
+                };
+            } else {
+                settings = {
+                    tcTotal: parseFloat(document.getElementById('setHistoryTcLine').value),
+                    bkTotal: parseFloat(document.getElementById('setHistoryBkLine').value),
+                    tc: {
+                        语文: parseFloat(document.getElementById('setHistoryChineseTc').value),
+                        数学: parseFloat(document.getElementById('setHistoryMathTc').value),
+                        英语: parseFloat(document.getElementById('setHistoryEnglishTc').value),
+                        历史: parseFloat(document.getElementById('setHistoryHistoryTc').value),
+                        政治: parseFloat(document.getElementById('setHistoryPoliticsTc').value),
+                        地理: parseFloat(document.getElementById('setHistoryGeographyTc').value),
+                    },
+                    bk: {
+                        语文: parseFloat(document.getElementById('setHistoryChineseBk').value),
+                        数学: parseFloat(document.getElementById('setHistoryMathBk').value),
+                        英语: parseFloat(document.getElementById('setHistoryEnglishBk').value),
+                        历史: parseFloat(document.getElementById('setHistoryHistoryBk').value),
+                        政治: parseFloat(document.getElementById('setHistoryPoliticsBk').value),
+                        地理: parseFloat(document.getElementById('setHistoryGeographyBk').value),
+                    },
+                    subjects: historySubjects
+                };
+            }
+
+
+            // 执行分析
+            performAnalysis();
+            document.getElementById('analysisContent').style.display = 'block';
+            document.getElementById('settingsSection').style.display = 'none';
+        }
+
+        function performAnalysis() {
+            if (studentData.length === 0) return;
+
+            // 确保总分正确
+            studentData.forEach(student => {
+                const subjects = currentSubjectType === 'physics' ? physicsSubjects : historySubjects;
+                let total = 0;
+                subjects.forEach(subject => {
+                    if (typeof student[subject] === 'number') total += student[subject];
+                });
+                student['总分'] = Math.round(total);
+            });
+
+            // 1. 总体情况表
+            generateOverallTable();
+            // 2. 分班级综合分析
+            generateClassAnalysis();
+            // 3. 特控线上线分析
+            generateTcAnalysis();
+            // 4. 本科线上线分析
+            generateBkAnalysis();
+            // 5. 总分分数段统计
+            generateScoreSegment();
+            // 6. 各班成绩分析表
+            generateClassSubjectTable();
+        }
+
+        // 辅助函数：计算平均分
+        function calculateAverage(values) {
+            const validValues = values.filter(v => typeof v === 'number' && !isNaN(v));
+            if (validValues.length === 0) return 0;
+            return validValues.reduce((sum, val) => sum + val, 0) / validValues.length;
+        }
+
+        // 辅助函数：获取最高分
+        function getMax(values) {
+            const validValues = values.filter(v => typeof v === 'number' && !isNaN(v));
+            if (validValues.length === 0) return 0;
+            return Math.max(...validValues);
+        }
+
+        // 1. 总体情况表
+        function generateOverallTable() {
+            const container = document.getElementById('overallTableContainer');
+            let html = '<table><thead><tr><th>学科</th><th>统计人数</th><th>平均分</th><th>难度系数</th><th>满分</th><th>最高分</th><th>特控线</th><th>特控线上线人数</th><th>特控线上线率</th><th>本科线</th><th>本科线上线人数</th><th>本科线上线率</th></tr></thead><tbody>';
+
+            // 合计行
+            const totalScores = studentData.map(s => s['总分']);
+            const totalCount = studentData.length;
+            const totalAverage = calculateAverage(totalScores);
+            const totalMax = getMax(totalScores);
+            const totalTcCount = studentData.filter(s => s['总分'] >= settings.tcTotal).length;
+            const totalBkCount = studentData.filter(s => s['总分'] >= settings.bkTotal).length;
+
+            html += `<tr class="summary-row">
+                <td>合计</td>
+                <td>${totalCount}</td>
+                <td>${totalAverage.toFixed(2)}</td>
+                <td>-</td>
+                <td>-</td>
+                <td>${totalMax}</td>
+                <td>${settings.tcTotal}</td>
+                <td>${totalTcCount}</td>
+                <td>${(totalTcCount / totalCount * 100).toFixed(2)}%</td>
+                <td>${settings.bkTotal}</td>
+                <td>${totalBkCount}</td>
+                <td>${(totalBkCount / totalCount * 100).toFixed(2)}%</td>
+            </tr>`;
+
+            // 分科统计
+            settings.subjects.forEach(subject => {
+                const scores = studentData.map(s => s[subject]).filter(s => typeof s === 'number' && !isNaN(s));
+                const count = scores.length;
+                const average = calculateAverage(scores);
+                const max = getMax(scores);
+                const tcLine = settings.tc[subject];
+                const bkLine = settings.bk[subject];
+                const tcCount = scores.filter(s => s >= tcLine).length;
+                const bkCount = scores.filter(s => s >= bkLine).length;
+                const difficulty = fullMarks[subject] ? (average / fullMarks[subject]).toFixed(2) : '-';
+
+                html += `<tr>
+                    <td>${subject}</td>
+                    <td>${count}</td>
+                    <td>${average.toFixed(2)}</td>
+                    <td>${difficulty}</td>
+                    <td>${fullMarks[subject] || '-'}</td>
+                    <td>${max}</td>
+                    <td>${tcLine}</td>
+                    <td>${tcCount}</td>
+                    <td>${(tcCount / count * 100).toFixed(2)}%</td>
+                    <td>${bkLine}</td>
+                    <td>${bkCount}</td>
+                    <td>${(bkCount / count * 100).toFixed(2)}%</td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // 2. 分班级综合分析
+        function generateClassAnalysis() {
+            const container = document.getElementById('classAnalysisContainer');
+            let html = '<table><thead><tr><th>班级</th><th>统计人数</th><th>人平总分</th>';
+
+            // 使用当前科目类型对应的科目列表
+            const subjectsToShow = currentSubjectType === 'physics' ? physicsSubjects : historySubjects;
+
+            subjectsToShow.forEach(subject => {
+                html += `<th>${subject}平均分</th><th>${subject}最高分</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            const classGroups = {};
+            studentData.forEach(student => {
+                const className = student['班级名称'] || '未知班级';
+                if (!classGroups[className]) {
+                    classGroups[className] = [];
+                }
+                classGroups[className].push(student);
+            });
+
+            // 学校合计数据
+            const schoolSummary = {
+                count: studentData.length,
+                avgTotal: calculateAverage(studentData.map(s => s['总分'])),
+                subjectAvgs: {},
+                subjectMaxs: {}
+            };
+
+            // 使用当前科目类型对应的科目列表计算学校合计
+            subjectsToShow.forEach(subject => {
+                const scores = studentData.map(s => s[subject]).filter(s => typeof s === 'number' && !isNaN(s));
+                schoolSummary.subjectAvgs[subject] = calculateAverage(scores);
+                schoolSummary.subjectMaxs[subject] = getMax(scores);
+            });
+
+            // 各班级数据
+            Object.keys(classGroups).sort().forEach(className => {
+                const students = classGroups[className];
+                const count = students.length;
+                const avgTotal = calculateAverage(students.map(s => s['总分']));
+
+                html += `<tr>
+            <td>${className}</td>
+            <td>${count}</td>
+            <td>${avgTotal.toFixed(2)}</td>`;
+
+                // 使用当前科目类型对应的科目列表生成班级数据
+                subjectsToShow.forEach(subject => {
+                    const scores = students.map(s => s[subject]).filter(s => typeof s === 'number' && !isNaN(s));
+                    const avg = calculateAverage(scores);
+                    const max = getMax(scores);
+                    html += `<td>${avg.toFixed(2)}</td><td>${max}</td>`;
+                });
+
+                html += '</tr>';
+            });
+
+            // 学校合计行
+            html += `<tr class="summary-row">
+        <td>学校合计</td>
+        <td>${schoolSummary.count}</td>
+        <td>${schoolSummary.avgTotal.toFixed(2)}</td>`;
+
+            subjectsToShow.forEach(subject => {
+                html += `<td>${schoolSummary.subjectAvgs[subject].toFixed(2)}</td><td>${schoolSummary.subjectMaxs[subject]}</td>`;
+            });
+
+            html += '</tr>';
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // 3. 特控线上线分析
+        function generateTcAnalysis() {
+            const container = document.getElementById('tcAnalysisContainer');
+            let html = '<table><thead><tr><th>班级</th><th>统计人数</th>';
+            settings.subjects.forEach(subject => {
+                html += `<th>${subject}特控线(${settings.tc[subject]})</th><th>${subject}上线人数</th><th>${subject}和总分双上人数</th>`;
+            });
+            html += '<th>总分特控线</th><th>总分上线人数</th><th>总分上线率</th></tr></thead><tbody>';
+
+            const classGroups = {};
+            studentData.forEach(student => {
+                const className = student['班级名称'] || '未知班级';
+                if (!classGroups[className]) {
+                    classGroups[className] = [];
+                }
+                classGroups[className].push(student);
+            });
+
+            // 学校合计数据
+            const schoolSummary = {
+                count: studentData.length,
+                subjectTcCounts: {},
+                subjectDoubleCounts: {},
+                totalTcCount: studentData.filter(s => s['总分'] >= settings.tcTotal).length
+            };
+
+            settings.subjects.forEach(subject => {
+                const tcSubject = settings.tc[subject];
+                schoolSummary.subjectTcCounts[subject] = studentData.filter(s => s[subject] >= tcSubject).length;
+                schoolSummary.subjectDoubleCounts[subject] = studentData.filter(s => s[subject] >= tcSubject && s['总分'] >= settings.tcTotal).length;
+            });
+
+            // 各班级数据
+            Object.keys(classGroups).sort().forEach(className => {
+                const students = classGroups[className];
+                const count = students.length;
+
+                html += `<tr><td>${className}</td><td>${count}</td>`;
+
+                settings.subjects.forEach(subject => {
+                    const tcSubject = settings.tc[subject];
+                    const subjectUp = students.filter(s => s[subject] >= tcSubject).length;
+                    const doubleUp = students.filter(s => s[subject] >= tcSubject && s['总分'] >= settings.tcTotal).length;
+                    html += `<td>${tcSubject}</td><td>${subjectUp}</td><td>${doubleUp}</td>`;
+                });
+
+                const totalUp = students.filter(s => s['总分'] >= settings.tcTotal).length;
+                html += `<td>${settings.tcTotal}</td><td>${totalUp}</td><td>${(totalUp / count * 100).toFixed(2)}%</td></tr>`;
+            });
+
+            // 学校合计行
+            html += `<tr class="summary-row">
+                <td>学校合计</td>
+                <td>${schoolSummary.count}</td>`;
+
+            settings.subjects.forEach(subject => {
+                html += `<td>${settings.tc[subject]}</td>
+                         <td>${schoolSummary.subjectTcCounts[subject]}</td>
+                         <td>${schoolSummary.subjectDoubleCounts[subject]}</td>`;
+            });
+
+            html += `<td>${settings.tcTotal}</td>
+                     <td>${schoolSummary.totalTcCount}</td>
+                     <td>${(schoolSummary.totalTcCount / schoolSummary.count * 100).toFixed(2)}%</td>
+                     </tr>`;
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // 4. 本科线上线分析
+        function generateBkAnalysis() {
+            const container = document.getElementById('bkAnalysisContainer');
+            let html = '<table><thead><tr><th>班级</th><th>统计人数</th>';
+
+            // 使用当前科目类型对应的科目列表
+            const subjectsToShow = currentSubjectType === 'physics' ? physicsSubjects : historySubjects;
+
+            subjectsToShow.forEach(subject => {
+                html += `<th>${subject}本科线(${settings.bk[subject]})</th>
+                <th>${subject}上线人数</th>
+                <th>${subject}和总分双上人数</th>`;
+            });
+
+            html += '<th>总分本科线</th><th>总分上线人数</th><th>总分上线率</th></tr></thead><tbody>';
+
+            const classGroups = {};
+            studentData.forEach(student => {
+                const className = student['班级名称'] || '未知班级';
+                if (!classGroups[className]) {
+                    classGroups[className] = [];
+                }
+                classGroups[className].push(student);
+            });
+
+            // 学校合计数据
+            const schoolSummary = {
+                count: studentData.length,
+                subjectBkCounts: {},
+                subjectDoubleCounts: {},
+                totalBkCount: 0  // 初始化为0
+            };
+
+            // 预计算学校总分上线人数
+            schoolSummary.totalBkCount = studentData.filter(s => {
+                return typeof s['总分'] === 'number' && s['总分'] >= settings.bkTotal;
+            }).length;
+
+            // 计算各科目上线人数
+            subjectsToShow.forEach(subject => {
+                const bkSubject = settings.bk[subject] || 0;
+
+                // 科目上线人数
+                schoolSummary.subjectBkCounts[subject] = studentData.filter(s => {
+                    return typeof s[subject] === 'number' && s[subject] >= bkSubject;
+                }).length;
+
+                // 科目和总分双上线人数
+                schoolSummary.subjectDoubleCounts[subject] = studentData.filter(s => {
+                    return typeof s[subject] === 'number' && typeof s['总分'] === 'number' &&
+                        s[subject] >= bkSubject && s['总分'] >= settings.bkTotal;
+                }).length;
+            });
+
+            // 各班级数据
+            Object.keys(classGroups).sort().forEach(className => {
+                const students = classGroups[className];
+                const count = students.length;
+
+                html += `<tr><td>${className}</td><td>${count}</td>`;
+
+                // 各科目数据
+                subjectsToShow.forEach(subject => {
+                    const bkSubject = settings.bk[subject] || 0;
+
+                    // 科目上线人数
+                    const subjectUp = students.filter(s => {
+                        return typeof s[subject] === 'number' && s[subject] >= bkSubject;
+                    }).length;
+
+                    // 科目和总分双上线人数
+                    const doubleUp = students.filter(s => {
+                        return typeof s[subject] === 'number' && typeof s['总分'] === 'number' &&
+                            s[subject] >= bkSubject && s['总分'] >= settings.bkTotal;
+                    }).length;
+
+                    html += `<td>${bkSubject}</td><td>${subjectUp}</td><td>${doubleUp}</td>`;
+                });
+
+                // 总分上线数据
+                const totalUp = students.filter(s => {
+                    return typeof s['总分'] === 'number' && s['总分'] >= settings.bkTotal;
+                }).length;
+
+                html += `<td>${settings.bkTotal}</td>
+                <td>${totalUp}</td>
+                <td>${count > 0 ? (totalUp / count * 100).toFixed(2) : '0.00'}%</td></tr>`;
+            });
+
+            // 学校合计行
+            html += `<tr class="summary-row">
+        <td>学校合计</td>
+        <td>${schoolSummary.count}</td>`;
+
+            subjectsToShow.forEach(subject => {
+                html += `<td>${settings.bk[subject]}</td>
+                <td>${schoolSummary.subjectBkCounts[subject]}</td>
+                <td>${schoolSummary.subjectDoubleCounts[subject]}</td>`;
+            });
+
+            html += `<td>${settings.bkTotal}</td>
+            <td>${schoolSummary.totalBkCount}</td>
+            <td>${schoolSummary.count > 0 ?
+                    (schoolSummary.totalBkCount / schoolSummary.count * 100).toFixed(2) : '0.00'}%</td>
+            </tr>`;
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // // 5. 总分分数段统计
+        function generateScoreSegment() {
+            const container = document.getElementById('scoreSegmentContainer');
+            const maxScore = Math.max(...studentData.map(s => s['总分']));
+            const minScore = Math.min(...studentData.map(s => s['总分']));
+            const segments = [];
+
+            // 特殊处理299分以下为一段
+            segments.push({ name: "299分以下", min: 0, max: 299 });
+
+            // 从300分开始，每20分为一段
+            let lowerBound = 300;
+            while (lowerBound <= maxScore) {
+                const upperBound = lowerBound + 19;
+                segments.push({
+                    name: `${lowerBound}-${upperBound}`,
+                    min: lowerBound,
+                    max: upperBound
+                });
+                lowerBound = upperBound + 1;
+            }
+
+            // 确保最后一段覆盖到最高分
+            if (segments.length > 1 && segments[segments.length - 1].max < maxScore) {
+                segments.push({
+                    name: `${lowerBound}分以上`,
+                    min: lowerBound,
+                    max: Infinity
+                });
+            }
+
+            let html = '<table><thead><tr><th>班级</th><th>统计人数</th>';
+            segments.forEach(seg => html += `<th>${seg.name}</th>`);
+            html += '</tr></thead><tbody>';
+
+            const classGroups = {};
+            studentData.forEach(student => {
+                const className = student['班级名称'] || '未知班级';
+                if (!classGroups[className]) {
+                    classGroups[className] = [];
+                }
+                classGroups[className].push(student);
+            });
+
+            // 学校合计数据
+            const schoolSummary = {
+                count: studentData.length,
+                segmentCounts: {}
+            };
+
+            segments.forEach(seg => {
+                if (seg.max === Infinity) {
+                    schoolSummary.segmentCounts[seg.name] =
+                        studentData.filter(s => s['总分'] >= seg.min).length;
+                } else {
+                    schoolSummary.segmentCounts[seg.name] =
+                        studentData.filter(s => s['总分'] >= seg.min && s['总分'] <= seg.max).length;
+                }
+            });
+
+            // 各班级数据
+            Object.keys(classGroups).sort().forEach(className => {
+                const students = classGroups[className];
+                const count = students.length;
+
+                html += `<tr><td>${className}</td><td>${count}</td>`;
+
+                segments.forEach(seg => {
+                    let segmentCount;
+                    if (seg.max === Infinity) {
+                        segmentCount = students.filter(s => s['总分'] >= seg.min).length;
+                    } else {
+                        segmentCount = students.filter(s => s['总分'] >= seg.min && s['总分'] <= seg.max).length;
+                    }
+                    html += `<td>${segmentCount}</td>`;
+                });
+                html += '</tr>';
+            });
+
+            // 学校合计行
+            html += `<tr class="summary-row"><td>学校合计</td><td>${schoolSummary.count}</td>`;
+            segments.forEach(seg => {
+                html += `<td>${schoolSummary.segmentCounts[seg.name]}</td>`;
+            });
+            html += '</tr>';
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // 下载表格为Excel
+        function downloadTable(containerId, filename) {
+            const table = document.querySelector(`#${containerId} table`);
+            if (!table) {
+                alert('未找到可下载的表格！');
+                return;
+            }
+            const workbook = XLSX.utils.table_to_book(table, { sheet: filename });
+            XLSX.writeFile(workbook, `${filename}.xlsx`);
+        }
+
+        function downloadAllAnalysis() {
+            if (!studentData || studentData.length === 0) {
+                alert('请先上传并分析数据！');
+                return;
+            }
+
+            const subjectTypeText = currentSubjectType === 'physics' ? '物理类' : '历史类';
+            const wb = XLSX.utils.book_new();
+
+            // ✅ 安全提取表格数据为二维数组
+            function extractCleanTableData(containerId) {
+                const rows = [];
+                const table = document.querySelector(`#${containerId} table`);
+                if (!table) return [];
+
+                table.querySelectorAll('tr').forEach(tr => {
+                    const row = [];
+                    tr.querySelectorAll('th, td').forEach(cell => {
+                        const text = cell.innerText?.trim() ?? '';
+                        row.push(text);
+                    });
+                    // 跳过空行
+                    if (row.length > 0 && row.some(v => v !== '')) {
+                        rows.push(row);
+                    }
+                });
+                return rows;
+            }
+
+            // ✅ 添加表格到工作簿
+            function addSheet(containerId, sheetName) {
+                const data = extractCleanTableData(containerId);
+                if (data.length === 0) return;
+                const ws = XLSX.utils.aoa_to_sheet(data);
+                XLSX.utils.book_append_sheet(wb, ws, sheetName);
+            }
+
+            addSheet('overallTableContainer', '1.总体情况表');
+            addSheet('classAnalysisContainer', '2.分班级综合分析');
+            addSheet('tcAnalysisContainer', '3.特控线上线分析');
+            addSheet('bkAnalysisContainer', '4.本科线上线分析');
+            addSheet('scoreSegmentContainer', '5.总分分数段统计');
+
+            // ✅ 各班成绩分析表
+            const classSubjectContainers = document.querySelectorAll('#classSubjectTableContainer table');
+            classSubjectContainers.forEach((table, index) => {
+                const rows = [];
+                table.querySelectorAll('tr').forEach(tr => {
+                    const row = [];
+                    tr.querySelectorAll('th, td').forEach(cell => {
+                        const text = cell.innerText?.trim() ?? '';
+                        row.push(text);
+                    });
+                    if (row.length > 0 && row.some(v => v !== '')) {
+                        rows.push(row);
+                    }
+                });
+                if (rows.length === 0) return;
+                const ws = XLSX.utils.aoa_to_sheet(rows);
+                const title = table.parentElement.querySelector('h3')?.innerText || `班级${index + 1}`;
+                XLSX.utils.book_append_sheet(wb, `6.${title}`);
+            });
+
+            // ✅ 导出文件
+            const fileName = `雷波三峡中学高一期末统测分析_全部数据_${subjectTypeText}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+        }
+
+
+        // 更新样式函数
+        function applyExcelStyles(worksheet, subjectTypeText) {
+            const styledWorksheet = JSON.parse(JSON.stringify(worksheet));
+
+            // 主标题样式
+            if (!styledWorksheet['A1']) styledWorksheet['A1'] = { t: 's' };
+            styledWorksheet['A1'].s = {
+                font: { bold: true, sz: 16, color: { rgb: "0056B3" } },
+                alignment: { horizontal: "center" }
+            };
+
+            // 副标题样式
+            ['A2', 'A3'].forEach(cell => {
+                if (!styledWorksheet[cell]) styledWorksheet[cell] = { t: 's' };
+                styledWorksheet[cell].s = {
+                    font: { sz: 12 },
+                    alignment: { horizontal: "left" }
+                };
+            });
+
+            // 科目类型加粗
+            if (styledWorksheet['A3']) {
+                styledWorksheet['A3'].s.font.bold = true;
+            }
+
+            return styledWorksheet;
+        }
+
+
+        // 修改applyExcelStyles函数，使其不修改输入参数
+        function applyExcelStyles(worksheet) {
+            // 创建新对象以避免修改原worksheet
+            const styledWorksheet = JSON.parse(JSON.stringify(worksheet));
+
+            // 设置标题样式
+            if (!styledWorksheet['A1'].s) styledWorksheet['A1'].s = {};
+            styledWorksheet['A1'].s = {
+                font: { bold: true, sz: 16, color: { rgb: "0056B3" } },
+                alignment: { horizontal: "center" }
+            };
+
+            // 设置时间样式
+            if (!worksheet['A2'].s) worksheet['A2'].s = {};
+            worksheet['A2'].s = {
+                font: { italic: true, sz: 12 },
+                alignment: { horizontal: "right" }
+            };
+
+            // 设置表头样式
+            const range = XLSX.utils.decode_range(worksheet['!ref']);
+            for (let C = range.s.c; C <= range.e.c; ++C) {
+                const cell = worksheet[XLSX.utils.encode_cell({ r: 3, c: C })];
+                if (cell) {
+                    cell.s = {
+                        fill: { fgColor: { rgb: "0056B3" } },
+                        font: { bold: true, color: { rgb: "FFFFFF" } },
+                        border: {
+                            top: { style: "thin", color: { rgb: "000000" } },
+                            bottom: { style: "thin", color: { rgb: "000000" } },
+                            left: { style: "thin", color: { rgb: "000000" } },
+                            right: { style: "thin", color: { rgb: "000000" } }
+                        }
+                    };
+                }
+            }
+
+            // 设置数据行样式
+            for (let R = 4; R <= range.e.r; ++R) {
+                for (let C = range.s.c; C <= range.e.c; ++C) {
+                    const cell = worksheet[XLSX.utils.encode_cell({ r: R, c: C })];
+                    if (cell) {
+                        cell.s = {
+                            border: {
+                                top: { style: "thin", color: { rgb: "DDDDDD" } },
+                                bottom: { style: "thin", color: { rgb: "DDDDDD" } },
+                                left: { style: "thin", color: { rgb: "DDDDDD" } },
+                                right: { style: "thin", color: { rgb: "DDDDDD" } }
+                            }
+                        };
+
+                        // 交替行颜色
+                        if (R % 2 === 0) {
+                            cell.s.fill = { fgColor: { rgb: "F2F2F2" } };
+                        }
+                    }
+                }
+            }
+
+            return worksheet;
+        }
+
+        // 导出为PDF函数
+        function exportToPDF() {
+            if (studentData.length === 0) {
+                alert('请先上传并分析数据！');
+                return;
+            }
+
+            // 获取当前科目类型
+            const subjectType = document.querySelector('input[name="subjectType"]:checked').value;
+            const subjectTypeText = subjectType === 'physics' ? '物理类' : '历史类';
+
+            // 创建加载提示
+            const loading = alert('正在生成PDF，请稍候...');
+
+            // 获取要导出的容器
+            const element = document.querySelector('.container');
+            const opt = {
+                scale: 2,                     // 缩放比例，提高清晰度
+                useCORS: true,                // 允许跨域图片
+                allowTaint: true,             // 允许污染图片
+                logging: false,               // 关闭日志
+                backgroundColor: '#FFFFFF'    // 白色背景
+            };
+
+            // 使用html2canvas转换HTML为canvas
+            html2canvas(element, opt).then(canvas => {
+                // 创建PDF文档
+                const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+                const imgData = canvas.toDataURL('image/png');
+
+                // 计算图片在A4纸上的尺寸
+                const imgWidth = 210; // A4纸宽度(mm)
+                const pageHeight = 295; // A4纸高度(mm)
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 0;
+
+                // 第一页
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                // 如果内容超过一页，添加新页
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                // 保存PDF文件
+                pdf.save(`雷波三峡中学高一年级期末统测分析_${subjectTypeText}_${new Date().toISOString().slice(0, 10)}.pdf`);
+
+                // 关闭加载提示
+                if (loading && loading.close) loading.close();
+            }).catch(err => {
+                console.error('导出PDF失败:', err);
+                alert('导出PDF失败: ' + err.message);
+                if (loading && loading.close) loading.close();
+            });
+        }
+
+        function generateClassSubjectTable() {
+            const container = document.getElementById('classSubjectTableContainer');
+            container.innerHTML = '';
+
+            // 当前科目列表 + 总分
+            const subjects = (currentSubjectType === 'physics'
+                ? ['语文', '数学', '英语', '物理', '化学', '生物', '政治', '地理']
+                : ['语文', '数学', '英语', '历史', '政治', '地理']).concat(['总分']);
+
+            const classGroups = {};
+            studentData.forEach(s => {
+                const cls = s['班级名称'] || '未知班级';
+                if (!classGroups[cls]) classGroups[cls] = [];
+                classGroups[cls].push(s);
+            });
+
+            Object.keys(classGroups).sort().forEach(cls => {
+                const students = classGroups[cls];
+                const classNum = cls.replace(/[^\d]/g, '');
+                const clsKey = `高一${classNum}班`;
+                const info = teacherMap[clsKey] || {};
+                const headTeacher = info.班主任 || '请填写';
+
+                // 生成任课教师映射
+                const teachers = {};
+                subjects.forEach(subject => {
+                    teachers[subject] = info.任课?.[subject] || '';
+                });
+
+                let html = `
+            <h3>高2025级（${classNum}）班2025年州统测成绩分析表（班主任：<span>${headTeacher}</span>）</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>统计</th>
+                        ${subjects.map(s => `<th>${s}</th>`).join('')}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>平均分</td>
+                        ${subjects.map(s => {
+                    const arr = students.map(st => st[s]).filter(v => typeof v === 'number' && v !== 0);
+                    const avg = arr.length ? calculateAverage(arr) : 0;
+                    return `<td>${avg ? avg.toFixed(2) : '-'}</td>`;
+                }).join('')}
+                    </tr>
+                    <tr>
+                        <td>特控上线人数</td>
+                        ${subjects.map(s => {
+                    const line = s === '总分' ? settings.tcTotal : settings.tc[s];
+                    const cnt = students.filter(st => typeof st[s] === 'number' && st[s] >= line).length;
+                    return `<td>${cnt}</td>`;
+                }).join('')}
+                    </tr>
+                    <tr>
+                        <td>本科上线人数</td>
+                        ${subjects.map(s => {
+                    const line = s === '总分' ? settings.bkTotal : settings.bk[s];
+                    const cnt = students.filter(st => typeof st[s] === 'number' && st[s] >= line).length;
+                    return `<td>${cnt}</td>`;
+                }).join('')}
+                    </tr>
+                    <tr>
+                        <td>本科+总分双上</td>
+                        ${subjects.map(s => {
+                    const subLine = s === '总分' ? settings.bkTotal : settings.bk[s];
+                    const cnt = students.filter(st =>
+                        typeof st[s] === 'number' && st[s] >= subLine &&
+                        typeof st['总分'] === 'number' && st['总分'] >= settings.bkTotal
+                    ).length;
+                    return `<td>${cnt}</td>`;
+                }).join('')}
+                    </tr>
+                    <tr>
+                        <td>任课教师</td>
+                        ${subjects.map(s => `<td>${teachers[s] || ''}</td>`).join('')}
+                    </tr>
+                </tbody>
+            </table>`;
+
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function downloadClassSubjectTables() {
+            if (!studentData.length) return alert('暂无数据！');
+
+            const subjects = (currentSubjectType === 'physics'
+                ? ['语文', '数学', '英语', '物理', '化学', '生物', '政治', '地理']
+                : ['语文', '数学', '英语', '历史', '政治', '地理']).concat(['总分']);
+
+            const wb = XLSX.utils.book_new();
+            const allData = [];
+
+            // 总标题
+            allData.push([`雷波三峡中学高2025级期末州统测各班成绩分析表（${subjectTypeText}）`]);
+            allData.push([]);
+            allData.push([]);
+
+            const classGroups = {};
+            studentData.forEach(s => {
+                const cls = s['班级名称'];
+                if (!classGroups[cls]) classGroups[cls] = [];
+                classGroups[cls].push(s);
+            });
+
+            let currentRow = 3; // 从第 4 行开始（0 基）
+
+            const merges = [];
+
+            Object.keys(classGroups).sort().forEach(cls => {
+                const students = classGroups[cls];
+                const classNum = cls.replace(/[^\d]/g, '');
+                const clsKey = `高一${classNum}班`;
+                const info = teacherMap[clsKey] || {};
+                const headTeacher = info.班主任 || '请填写';
+
+                // 班级标题
+                const title = `高2025级（${classNum}）班 —— 班主任：${headTeacher}`;
+                allData.push([title]);
+                merges.push({ s: { r: currentRow, c: 0 }, e: { r: currentRow, c: subjects.length } });
+                currentRow++;
+
+                // 表头
+                allData.push(['统计', ...subjects]);
+                currentRow++;
+
+                // 数据行
+                const rows = [
+                    ['平均分', ...subjects.map(s => {
+                        const arr = students.map(st => st[s]).filter(v => typeof v === 'number' && v !== 0);
+                        const avg = arr.length ? calculateAverage(arr) : 0;
+                        return avg ? avg.toFixed(2) : '-';
+                    })],
+                    ['特控上线人数', ...subjects.map(s => {
+                        const line = s === '总分' ? settings.tcTotal : settings.tc[s];
+                        return students.filter(st => typeof st[s] === 'number' && st[s] >= line).length;
+                    })],
+                    ['本科上线人数', ...subjects.map(s => {
+                        const line = s === '总分' ? settings.bkTotal : settings.bk[s];
+                        return students.filter(st => typeof st[s] === 'number' && st[s] >= line).length;
+                    })],
+                    ['本科+总分双上', ...subjects.map(s => {
+                        const subLine = s === '总分' ? settings.bkTotal : settings.bk[s];
+                        return students.filter(st =>
+                            typeof st[s] === 'number' && st[s] >= subLine &&
+                            typeof st['总分'] === 'number' && st['总分'] >= settings.bkTotal
+                        ).length;
+                    })],
+                    ['任课教师', ...subjects.map(s => info.任课?.[s] || '')]
+                ];
+
+                rows.forEach(row => {
+                    allData.push(row);
+                    currentRow++;
+                });
+
+                // 班级之间空两行
+                allData.push([]);
+                allData.push([]);
+                currentRow += 2;
+            });
+
+            // 创建工作表
+            const ws = XLSX.utils.aoa_to_sheet(allData);
+
+            // 合并单元格
+            ws['!merges'] = merges;
+
+            // 列宽
+            ws['!cols'] = Array(subjects.length + 1).fill({ wch: 14 });
+            ws['!cols'][0] = { wch: 20 };
+
+            // 边框与样式
+            const range = XLSX.utils.decode_range(ws['!ref']);
+            for (let R = 0; R <= range.e.r; R++) {
+                for (let C = 0; C <= range.e.c; C++) {
+                    const cell = XLSX.utils.encode_cell({ r: R, c: C });
+                    if (!ws[cell]) ws[cell] = { t: 's', v: '' };
+                    ws[cell].s = {
+                        border: {
+                            top: { style: 'thin', color: { rgb: '000000' } },
+                            bottom: { style: 'thin', color: { rgb: '000000' } },
+                            left: { style: 'thin', color: { rgb: '000000' } },
+                            right: { style: 'thin', color: { rgb: '000000' } }
+                        },
+                        alignment: { horizontal: 'center', vertical: 'center' }
+                    };
+
+                    // 表头加粗背景
+                    if (R === 1 || (ws[cell].v === '统计') || allData[R]?.[0]?.startsWith('高2025级')) {
+                        ws[cell].s.fill = { fgColor: { rgb: 'E9ECEF' } };
+                        ws[cell].s.font = { bold: true };
+                    }
+
+                    // 主标题
+                    if (R === 0) {
+                        ws[cell].s.font = { bold: true, sz: 16, color: { rgb: '0056B3' } };
+                        ws[cell].s.alignment = { horizontal: 'center' };
+                    }
+                }
+            }
+
+            // 添加工作表并导出
+            XLSX.utils.book_append_sheet(wb, ws, '各班成绩分析总表');
+            const fileName = `各班成绩分析总表_${subjectTypeText}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+        }
+
+
+        /* ========= 1. 全局变量 ========= */
+        let teacherMap = {};   // 班级 -> {班主任, 任课:{学科:教师}}
+
+        /* ========= 2. 生成并下载教师模板 ========= */
+        /* 生成并下载教师任课表（20 班 × 10 科） */
+        function downloadTeacherTemplate() {
+            const classes = Array.from({ length: 20 }, (_, i) => `高一${i + 1}班`);
+            const subjects = ['语文', '数学', '英语', '物理', '化学', '生物', '历史', '地理', '政治'];
+            const header = ['班级名称', '班主任', ...subjects, '任课教师'];
+            const rows = [];
+
+            classes.forEach(cls => {
+                // 每班一行，班主任和各学科先留空，由使用者填写
+                rows.push([cls, '', ...Array(subjects.length).fill(''), '']);
+            });
+
+            const ws = XLSX.utils.aoa_to_sheet([header, ...rows]);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, '教师任课表');
+            XLSX.writeFile(wb, '教师任课表模板.xlsx');
+        }
+
+
+
+
+        /* ========= 3. 解析上传的教师表 ========= */
+        function processTeacherFile() {
+            const fileInput = document.getElementById('teacherFileInput');
+            const file = fileInput.files[0];
+            if (!file) { alert('请先选择教师任课表！'); return; }
+
+            const reader = new FileReader();
+            reader.onload = e => {
+                try {
+                    const wb = XLSX.read(e.target.result, { type: 'array' });
+                    const ws = wb.Sheets[wb.SheetNames[0]];
+                    const data = XLSX.utils.sheet_to_json(ws, { defval: '' });
+
+                    teacherMap = {};
+                    const subjects = ['语文', '数学', '英语', '物理', '化学', '生物', '历史', '政治', '地理'];
+
+                    data.forEach(r => {
+                        const cls = r['班级名称']?.trim();
+                        if (!cls) return;
+
+                        teacherMap[cls] = {
+                            班主任: r['班主任']?.trim() || '',
+                            任课: {}
+                        };
+
+                        subjects.forEach(sub => {
+                            if (r[sub]) {
+                                teacherMap[cls].任课[sub] = r[sub].trim();
+                            }
+                        });
+                    });
+
+                    alert(`成功导入 ${Object.keys(teacherMap).length} 个班级的教师信息！`);
+                    if (document.getElementById('analysisContent').style.display !== 'none') {
+                        generateClassSubjectTable(); // 重新生成表格并回填
+                    }
+                } catch (err) {
+                    alert('教师表解析失败：' + err.message);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+
+
+
+        /* ========= 4. 回填班主任/任课教师到页面 ========= */
+        function fillTeacherNames() {
+            // 1) 各班成绩分析表
+            document.querySelectorAll('#classSubjectTableContainer h3').forEach(h3 => {
+                const className = h3.textContent.match(/高2025级\((\d+)\)班/);
+                if (!className) return;
+                const clsKey = `高一${className[1]}班`;   // 与模板保持一致
+                const info = teacherMap[clsKey];
+                if (!info) return;
+
+                // 班主任
+                const span = h3.querySelector('span');
+                if (span && info.班主任) span.textContent = info.班主任;
+
+                // 任课教师
+                const rowTeacher = h3.nextElementSibling.querySelector('tbody tr:last-child');
+                if (!rowTeacher) return;
+                [...rowTeacher.children].forEach((td, idx) => {
+                    if (idx === 0) return; // 首列是“任课教师”
+                    const subject = td.closest('table').querySelector('thead th').children[idx]?.textContent;
+                    if (subject && info.任课[subject]) td.textContent = info.任课[subject];
+                });
+            });
+        }
+        /* 统一班级名称为“高一X班”格式 */
+        function normalizeClassNames() {
+            studentData.forEach(stu => {
+                let cls = stu['班级名称'];
+                if (!cls) return;
+                cls = String(cls).trim();
+
+                // 如果已经是“高一X班”则跳过
+                if (/^高一\d+班$/.test(cls)) return;
+
+                // 纯数字 -> “高一X班”
+                if (/^\d+$/.test(cls)) {
+                    stu['班级名称'] = `高一${cls}班`;
+                    return;
+                }
+
+                // 其它情况：去掉前后空格
+                stu['班级名称'] = cls;
+            });
+        }
+
+        function downloadClassSubjectTablesStyled() {
+            if (!studentData.length) return alert('暂无数据！');
+
+            const subjects = (currentSubjectType === 'physics'
+                ? ['语文', '数学', '英语', '物理', '化学', '生物', '政治', '地理']
+                : ['语文', '数学', '英语', '历史', '政治', '地理']).concat(['总分']);
+
+            const wb = XLSX.utils.book_new();
+            const allData = [];
+
+            // 主标题
+            allData.push([`雷波三峡中学高2025级各班成绩分析表（${subjectTypeText}）`]);
+            allData.push([]);
+            allData.push([]);
+
+            const classGroups = {};
+            studentData.forEach(s => {
+                const cls = s['班级名称'];
+                if (!classGroups[cls]) classGroups[cls] = [];
+                classGroups[cls].push(s);
+            });
+
+            let currentRow = 3; // 0 基
+
+            Object.keys(classGroups).sort().forEach(cls => {
+                const students = classGroups[cls];
+                const classNum = cls.replace(/[^\d]/g, '');
+                const clsKey = `高一${classNum}班`;
+                const info = teacherMap[clsKey] || {};
+                const headTeacher = info.班主任 || '请填写';
+
+                // 班级标题
+                allData.push([`高2025级（${classNum}）班 —— 班主任：${headTeacher}`]);
+                allData.push(['统计', ...subjects]);
+                allData.push(['平均分', ...subjects.map(s => {
+                    const arr = students.map(st => st[s]).filter(v => typeof v === 'number' && v !== 0);
+                    const avg = arr.length ? calculateAverage(arr) : 0;
+                    return avg ? avg.toFixed(2) : '-';
+                })]);
+                allData.push(['特控上线人数', ...subjects.map(s => {
+                    const line = s === '总分' ? settings.tcTotal : settings.tc[s];
+                    return students.filter(st => typeof st[s] === 'number' && st[s] >= line).length;
+                })]);
+                allData.push(['本科上线人数', ...subjects.map(s => {
+                    const line = s === '总分' ? settings.bkTotal : settings.bk[s];
+                    return students.filter(st => typeof st[s] === 'number' && st[s] >= line).length;
+                })]);
+                allData.push(['本科+总分双上', ...subjects.map(s => {
+                    const subLine = s === '总分' ? settings.bkTotal : settings.bk[s];
+                    return students.filter(st =>
+                        typeof st[s] === 'number' && st[s] >= subLine &&
+                        typeof st['总分'] === 'number' && st['总分'] >= settings.bkTotal
+                    ).length;
+                })]);
+                allData.push(['任课教师', ...subjects.map(s => info.任课?.[s] || '')]);
+
+                // 班级之间空两行
+                allData.push([]);
+                allData.push([]);
+            });
+
+            // 创建带样式的工作表
+            const ws = XLSX.utils.aoa_to_sheet(allData);
+
+            // 合并单元格
+            const merges = [];
+            // 👇 合并主标题（第一行）
+            merges.unshift({ s: { r: 0, c: 0 }, e: { r: 0, c: subjects.length } });
+            for (let i = 0; i < allData.length; i++) {
+                const row = allData[i];
+                if (row.length === 1 && row[0].startsWith('高2025级')) {
+                    merges.push({ s: { r: i, c: 0 }, e: { r: i, c: subjects.length } });
+                }
+            }
+            ws['!merges'] = merges;
+
+            // 列宽
+            ws['!cols'] = Array(subjects.length + 1).fill({ wch: 14 });
+            ws['!cols'][0] = { wch: 20 };
+
+            // 样式
+            const range = XLSX.utils.decode_range(ws['!ref']);
+            for (let R = 0; R <= range.e.r; R++) {
+                for (let C = 0; C <= range.e.c; C++) {
+                    const cell = XLSX.utils.encode_cell({ r: R, c: C });
+                    if (!ws[cell]) ws[cell] = { t: 's', v: '' };
+
+                    // 基本样式
+                    ws[cell].s = {
+                        border: {
+                            top: { style: 'thin', color: { rgb: '000000' } },
+                            bottom: { style: 'thin', color: { rgb: '000000' } },
+                            left: { style: 'thin', color: { rgb: '000000' } },
+                            right: { style: 'thin', color: { rgb: '000000' } }
+                        },
+                        alignment: { horizontal: 'center', vertical: 'center' },
+                        font: {}
+                    };
+
+                    // 主标题
+                    if (R === 0) {
+                        ws[cell].s.font = { bold: true, sz: 16, color: { rgb: '0056B3' } };
+                        ws[cell].s.alignment = { horizontal: 'center' };
+                    }
+
+                    // 班级标题
+                    if (allData[R]?.[0]?.startsWith('高2025级')) {
+                        ws[cell].s.font = { bold: true, sz: 13 };
+                        ws[cell].s.alignment = { horizontal: 'center' };
+                    }
+
+                    // 表头
+                    if (allData[R]?.[0] === '统计') {
+                        ws[cell].s.fill = { fgColor: { rgb: 'E9ECEF' } };
+                        ws[cell].s.font = { bold: true };
+                    }
+                }
+            }
+
+            XLSX.utils.book_append_sheet(wb, ws, '各班成绩分析总表');
+            const fileName = `各班成绩分析总表_带样式_${subjectTypeText}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+        }
+
+    </script>
+</body>
+
+</html>
