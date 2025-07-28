@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             "VideoID": document.getElementById('videoBvid').value.trim(),
             "AgeGroup": document.getElementById('videoAge').value,
             "Category": categoryField, // 动态处理字段类型
-            "Duration": 300, // 修复拼写错误
+            "uration": 300, // 修复拼写错误
             "Rating": 5,
             "videoEpisodes": parseInt(document.getElementById('videoEpisodes').value) || 1
         };
