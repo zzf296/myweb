@@ -1,0 +1,57 @@
+/* 基础样式 */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* 视频卡片 */
+.video-card {
+    transition: all 0.3s ease;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.video-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* 年龄标签 */
+.age-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 50rem;
+}
+.age-0-2岁 { background-color: #ffd6e0; color: #c2185b; }
+.age-2-3岁 { background-color: #fff0b2; color: #f57c00; }
+.age-3-4岁 { background-color: #c8e6c9; color: #388e3c; }
+.age-4-5岁 { background-color: #bbdefb; color: #1976d2; }
+.age-5-6岁 { background-color: #e1bee7; color: #7b1fa2; }
+
+/* 加载指示器动画 */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.spinner-border {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    border: 0.25em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+}
+
+/* 过渡效果 */
+#videoContainer {
+    transition: opacity 0.3s ease;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .filter-section > div {
+        margin-bottom: 10px;
+    }
+}
