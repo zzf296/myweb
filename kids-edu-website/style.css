@@ -11,6 +11,7 @@ body {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    position: relative;
 }
 .video-card:hover {
     transform: translateY(-5px);
@@ -29,11 +30,7 @@ body {
 .age-4-5岁 { background-color: #bbdefb; color: #1976d2; }
 .age-5-6岁 { background-color: #e1bee7; color: #7b1fa2; }
 
-/* 加载指示器动画 */
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
+/* 加载指示器 */
 .spinner-border {
     display: inline-block;
     width: 2rem;
@@ -44,9 +41,94 @@ body {
     animation: spin 0.75s linear infinite;
 }
 
-/* 过渡效果 */
-#videoContainer {
-    transition: opacity 0.3s ease;
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 视频控制按钮 */
+.video-controls {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 10;
+    display: flex;
+    gap: 5px;
+}
+
+.video-controls .btn {
+    background-color: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.video-card:hover .video-controls .btn {
+    opacity: 1;
+}
+
+.video-controls .btn:hover {
+    background-color: rgba(0,0,0,0.7);
+}
+
+/* 选集按钮 */
+.episode-scroll {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.episode-buttons {
+    display: inline-flex;
+    gap: 5px;
+    min-width: min-content;
+}
+
+.episode-buttons .btn {
+    padding: 0.15rem 0.4rem;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 50px;
+    text-align: center;
+}
+
+/* 隐藏滚动条 */
+.episode-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.episode-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* 投屏提示 */
+.cast-toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0,0,0,0.7);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    animation: fadeInOut 3s forwards;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { opacity: 0; }
 }
 
 /* 响应式调整 */
@@ -54,4 +136,111 @@ body {
     .filter-section > div {
         margin-bottom: 10px;
     }
+    
+    .video-card {
+        margin-bottom: 20px;
+    }
+    
+    .video-controls .btn {
+        opacity: 1;
+    }
+}
+/* 新增选集按钮容器样式 */
+.episode-container {
+    margin: 10px 0;
+    padding: 5px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+/* 选集按钮样式优化 */
+.episode-btn {
+    padding: 3px 8px;
+    margin: 2px;
+    font-size: 12px;
+    border-radius: 12px;
+    min-width: 40px;
+}
+
+/* 评分样式 */
+.rating {
+    color: #ffc107;
+    font-size: 14px;
+}
+
+/* 视频卡片标题 */
+.video-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* 加载失败提示 */
+.video-fallback {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    color: #6c757d;
+}
+
+/* 分类标签样式 */
+.category-badge {
+    font-size: 12px;
+    padding: 3px 8px;
+    margin-right: 5px;
+}
+/* 添加视频表单样式 */
+#addVideoForm .form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+#submitVideoBtn {
+    min-width: 120px;
+}
+
+#formMessage {
+    min-height: 60px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    #addVideoForm .col-md-6, 
+    #addVideoForm .col-md-4 {
+        margin-bottom: 1rem;
+    }
+}
+/* 集数输入框样式 */
+#videoEpisodes {
+    width: 100%;
+}
+
+/* 选集按钮容器 */
+.episode-container {
+    margin: 10px 0;
+    padding: 10px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+/* 选集按钮样式 */
+.episode-buttons {
+    display: flex;
+    gap: 5px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.episode-buttons::-webkit-scrollbar {
+    height: 4px;
+}
+
+.episode-buttons::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 2px;
 }
