@@ -145,6 +145,7 @@ body {
         opacity: 1;
     }
 }
+
 /* 新增选集按钮容器样式 */
 .episode-container {
     margin: 10px 0;
@@ -194,6 +195,7 @@ body {
     padding: 3px 8px;
     margin-right: 5px;
 }
+
 /* 添加视频表单样式 */
 #addVideoForm .form-label {
     font-weight: 500;
@@ -215,6 +217,7 @@ body {
         margin-bottom: 1rem;
     }
 }
+
 /* 集数输入框样式 */
 #videoEpisodes {
     width: 100%;
@@ -243,4 +246,20 @@ body {
 .episode-buttons::-webkit-scrollbar-thumb {
     background: #ddd;
     border-radius: 2px;
+}
+
+/* 懒加载占位图 */
+.lazy-placeholder {
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 14px;
+}
+
+/* 加载更多按钮 */
+#loadMoreBtn {
+    min-width: 150px;
+    padding: 8px 20px;
 }
