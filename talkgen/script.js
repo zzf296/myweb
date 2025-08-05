@@ -1,24 +1,92 @@
-// 全局变量
-let settings = {
+
+
+// 全局配置
+let config = {
     questionsPerCategory: 3,
-    airtableApiKey: 'patsxj3SsbDy1hoIB.ed65241a21019abde819cfbbc7c94fe5d7c1ff15f7901da8063929aae6640d32',
-    airtableBaseId: 'app5EJ7NLnxJWpfXC',
-    airtableTableName: 'Questions'
+    airtable: {
+        apiKey: 'patsxj3SsbDy1hoIB.93fa6fb2a6f94825559a2aec7b79f374a9e52acc7068d377e3f771575ac6382f',
+        baseId: 'app5EJ7NLnxJWpfXC',
+        tables: {
+            questions: 'tblgUUajpixKGO1IL',  // 存储问题的表ID
+            records: 'tblfZfDZf64H656IK'    // 存储记录的表ID
+        }
+    }
 };
 
-// 初始化函数
+// DOM加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
-    // 加载设置
     loadSettings();
-    
-    // 设置当前日期
-    const today = new Date();
-    const dateStr = today.toISOString().substr(0, 10);
-    document.getElementById('recordDate').value = dateStr;
-    
-    // 生成记录编号
-    generateRecordNo();
+    initForm();
 });
+
+// 加载设置
+function loadSettings() {
+    const savedConfig = localStorage.getItem('interviewSystemConfig');
+    if (savedConfig) {
+        try {
+            config = JSON.parse(savedConfig);
+            applyConfigToUI();
+        } catch (e) {
+            console.error('加载配置出错：', e);
+            resetConfig();
+        }
+    }
+    generateRecordNo();
+}
+
+// 重置配置
+function resetConfig() {
+    config = {
+        questionsPerCategory: 3,
+        airtable: {
+            apiKey: '',
+            baseId: '',
+            tables: {
+                questions: 'questions',
+                records: 'records'
+            }
+        }
+    };
+    applyConfigToUI();
+}
+
+// 应用配置到UI
+function applyConfigToUI() {
+    document.getElementById('questionsPerCategory').value = config.questionsPerCategory;
+    document.getElementById('airtableApiKey').value = config.airtable.apiKey;
+    document.getElementById('airtableBaseId').value = config.airtable.baseId;
+}
+
+// 保存设置
+function saveSettings() {
+    config = {
+        questionsPerCategory: parseInt(document.getElementById('questionsPerCategory').value) || 3,
+        airtable: {
+            apiKey: document.getElementById('airtableApiKey').value.trim(),
+            baseId: document.getElementById('airtableBaseId').value.trim(),
+            tables: {
+                questions: 'questions',
+                records: 'records'
+            }
+        }
+    };
+    
+    localStorage.setItem('interviewSystemConfig', JSON.stringify(config));
+    alert('配置已保存');
+    toggleSettings();
+}
+
+// 切换设置面板
+function toggleSettings() {
+    const panel = document.getElementById('settingsPanel');
+    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+}
+
+// 初始化表单
+function initForm() {
+    const today = new Date();
+    document.getElementById('recordDate').value = today.toISOString().substr(0, 10);
+}
 
 // 生成记录编号
 function generateRecordNo() {
@@ -30,113 +98,134 @@ function generateRecordNo() {
     document.getElementById('recordNo').value = randomNo;
 }
 
-// 切换设置面板显示
-function toggleSettings() {
-    const panel = document.getElementById('settingsPanel');
-    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-}
-
-// 加载设置
-function loadSettings() {
-    const savedSettings = localStorage.getItem('interviewSystemSettings');
-    if (savedSettings) {
-        settings = JSON.parse(savedSettings);
-        document.getElementById('questionsPerCategory').value = settings.questionsPerCategory;
-        document.getElementById('airtableApiKey').value = settings.airtableApiKey;
-        document.getElementById('airtableBaseId').value = settings.airtableBaseId;
-        document.getElementById('airtableTableName').value = settings.airtableTableName;
+// Airtable API 封装
+class AirtableAPI {
+    constructor(baseId, apiKey) {
+        this.baseId = baseId;
+        this.apiKey = apiKey;
+        this.baseUrl = 'https://api.airtable.com/v0';
+    }
+    
+    async getRecords(table, params = {}) {
+        const url = `${this.baseUrl}/${this.baseId}/${encodeURIComponent(table)}`;
+        try {
+            const response = await axios.get(url, {
+                headers: this._getHeaders(),
+                params: params
+            });
+            return response.data.records;
+        } catch (error) {
+            this._handleError(error);
+            throw error;
+        }
+    }
+    
+    async createRecord(table, fields) {
+        const url = `${this.baseUrl}/${this.baseId}/${encodeURIComponent(table)}`;
+        try {
+            const response = await axios.post(url, { fields }, {
+                headers: this._getHeaders()
+            });
+            return response.data;
+        } catch (error) {
+            this._handleError(error);
+            throw error;
+        }
+    }
+    
+    async deleteRecord(table, recordId) {
+        const url = `${this.baseUrl}/${this.baseId}/${encodeURIComponent(table)}/${recordId}`;
+        try {
+            const response = await axios.delete(url, {
+                headers: this._getHeaders()
+            });
+            return response.data;
+        } catch (error) {
+            this._handleError(error);
+            throw error;
+        }
+    }
+    
+    _getHeaders() {
+        return {
+            'Authorization': `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json'
+        };
+    }
+    
+    _handleError(error) {
+        console.error('Airtable API Error:', {
+            status: error.response?.status,
+            data: error.response?.data,
+            config: error.config
+        });
+        throw new Error(error.response?.data?.error?.message || 'Airtable请求失败');
     }
 }
 
-// 保存设置
-function saveSettings() {
-    settings.questionsPerCategory = parseInt(document.getElementById('questionsPerCategory').value) || 3;
-    settings.airtableApiKey = document.getElementById('airtableApiKey').value.trim();
-    settings.airtableBaseId = document.getElementById('airtableBaseId').value.trim();
-    settings.airtableTableName = document.getElementById('airtableTableName').value.trim() || 'Questions';
-    
-    localStorage.setItem('interviewSystemSettings', JSON.stringify(settings));
-    alert('设置已保存');
-    toggleSettings();
+// 获取Airtable客户端
+function getAirtableClient() {
+    if (!config.airtable.apiKey || !config.airtable.baseId) {
+        throw new Error('请先在设置中配置Airtable API信息');
+    }
+    return new AirtableAPI(config.airtable.baseId, config.airtable.apiKey);
 }
 
 // 生成问题
 async function generateQuestions() {
     const candidateName = document.getElementById('candidateName').value || '[考察对象]';
-    const questionsPerCategory = settings.questionsPerCategory || 3;
+    const questionsPerCategory = config.questionsPerCategory || 3;
     
-    // 检查Airtable配置
-    if (!settings.airtableApiKey || !settings.airtableBaseId) {
-        alert('请先在设置中配置Airtable API信息');
-        toggleSettings();
+    try {
+        const airtable = getAirtableClient();
+        const questions = await airtable.getRecords(config.airtable.tables.questions);
+        
+        // 按类别组织问题
+        const questionsByCategory = {
+            '政治素质与道德品质': [],
+            '工作能力与业务水平': [],
+            '工作作风与廉洁自律': [],
+            '性格特点与团队协作': [],
+            '生活作风与社交关系': [],
+            '综合评价': []
+        };
+        
+        questions.forEach(record => {
+            const category = record.fields.Category;
+            const text = record.fields.Text;
+            if (category && text && questionsByCategory[category]) {
+                questionsByCategory[category].push(text);
+            }
+        });
+        
+        // 渲染问题
+        renderQuestions('politicalQuestions', questionsByCategory['政治素质与道德品质'], questionsPerCategory, candidateName);
+        renderQuestions('abilityQuestions', questionsByCategory['工作能力与业务水平'], questionsPerCategory, candidateName);
+        renderQuestions('styleQuestions', questionsByCategory['工作作风与廉洁自律'], questionsPerCategory, candidateName);
+        renderQuestions('personalityQuestions', questionsByCategory['性格特点与团队协作'], questionsPerCategory, candidateName);
+        renderQuestions('lifeQuestions', questionsByCategory['生活作风与社交关系'], questionsPerCategory, candidateName);
+        renderQuestions('overallQuestions', questionsByCategory['综合评价'], Math.max(2, Math.floor(questionsPerCategory/2)), candidateName);
+        
+    } catch (error) {
+        showError('生成问题失败', error);
+    }
+}
+
+// 渲染问题到指定容器
+function renderQuestions(containerId, questions, count, candidateName) {
+    const container = document.getElementById(containerId);
+    const replaceName = (q) => q.replace(/\[考察对象\]/g, candidateName);
+    
+    if (!questions || questions.length === 0) {
+        container.innerHTML = createQuestionItem('暂无相关问题');
         return;
     }
     
-    try {
-        // 从Airtable获取问题
-        const questions = await fetchQuestionsFromAirtable();
-        
-        // 替换所有问题中的占位符
-        const replaceName = (q) => q.replace(/\[考察对象\]/g, candidateName);
-        
-        // 从每个类别中随机选择问题
-        document.getElementById('politicalQuestions').innerHTML = 
-            getRandomQuestions(questions.political, questionsPerCategory).map(q => createQuestionItem(replaceName(q))).join('');
-        
-        document.getElementById('abilityQuestions').innerHTML = 
-            getRandomQuestions(questions.ability, questionsPerCategory).map(q => createQuestionItem(replaceName(q))).join('');
-        
-        document.getElementById('styleQuestions').innerHTML = 
-            getRandomQuestions(questions.style, questionsPerCategory).map(q => createQuestionItem(replaceName(q))).join('');
-        
-        document.getElementById('personalityQuestions').innerHTML = 
-            getRandomQuestions(questions.personality, questionsPerCategory).map(q => createQuestionItem(replaceName(q))).join('');
-        
-        document.getElementById('lifeQuestions').innerHTML = 
-            getRandomQuestions(questions.life, questionsPerCategory).map(q => createQuestionItem(replaceName(q))).join('');
-        
-        document.getElementById('overallQuestions').innerHTML = 
-            getRandomQuestions(questions.overall, Math.max(2, Math.floor(questionsPerCategory/2))).map(q => createQuestionItem(replaceName(q))).join('');
-        
-    } catch (error) {
-        console.error('获取问题失败:', error);
-        alert('获取问题失败，请检查Airtable配置和网络连接');
-    }
+    const selectedQuestions = getRandomQuestions(questions, count);
+    container.innerHTML = selectedQuestions.map(q => createQuestionItem(replaceName(q))).join('');
 }
 
-// 从Airtable获取问题
-async function fetchQuestionsFromAirtable() {
-    const url = `https://api.airtable.com/v0/${settings.airtableBaseId}/${settings.airtableTableName}`;
-    
-    const response = await axios.get(url, {
-        headers: {
-            'Authorization': `Bearer ${settings.airtableApiKey}`
-        }
-    });
-    
-    const questions = {
-        political: [],
-        ability: [],
-        style: [],
-        personality: [],
-        life: [],
-        overall: []
-    };
-    
-    response.data.records.forEach(record => {
-        const category = record.fields.Category;
-        const text = record.fields.Text;
-        const id = record.id;
-        
-        if (questions[category]) {
-            questions[category].push({text, id});
-        }
-    });
-    
-    return questions;
-}
-
-// 创建问题项
+// 创建问题项HTML
 function createQuestionItem(questionText) {
     return `
         <div class="question-item">
@@ -149,21 +238,14 @@ function createQuestionItem(questionText) {
 // 从数组中获取随机问题
 function getRandomQuestions(questions, count) {
     if (!questions || questions.length === 0) {
-        return ['暂无相关问题，请先在问题库中添加'];
+        return ['暂无相关问题'];
     }
     
-    // 如果是字符串数组（默认问题），直接处理
-    if (typeof questions[0] === 'string') {
-        const shuffled = [...questions].sort(() => 0.5 - Math.random());
-        return shuffled.slice(0, Math.min(count, questions.length));
-    }
-    
-    // 如果是对象数组（来自Airtable），提取text属性
     const shuffled = [...questions].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, Math.min(count, questions.length)).map(q => q.text);
+    return shuffled.slice(0, Math.min(count, questions.length));
 }
 
-// 保存记录到Airtable
+// 保存记录
 async function saveRecord() {
     const candidateName = document.getElementById('candidateName').value;
     if (!candidateName) {
@@ -171,45 +253,33 @@ async function saveRecord() {
         return;
     }
     
-    // 检查Airtable配置
-    if (!settings.airtableApiKey || !settings.airtableBaseId) {
-        alert('请先在设置中配置Airtable API信息');
-        toggleSettings();
-        return;
-    }
-    
-    // 收集记录数据
-    const recordData = {
-        fields: {
-            'RecordNo': document.getElementById('recordNo').value,
-            'Date': document.getElementById('recordDate').value,
-            'CandidateName': candidateName,
-            'Position': document.getElementById('candidatePosition').value,
-            'Interviewer': document.getElementById('interviewer').value,
-            'Method': document.getElementById('interviewMethod').value,
-            'Interviewee': document.getElementById('interviewee').value,
-            'Relationship': document.getElementById('relationship').value,
-            'PoliticalAnswers': collectAnswers('politicalQuestions'),
-            'AbilityAnswers': collectAnswers('abilityQuestions'),
-            'StyleAnswers': collectAnswers('styleQuestions'),
-            'PersonalityAnswers': collectAnswers('personalityQuestions'),
-            'LifeAnswers': collectAnswers('lifeQuestions'),
-            'OverallAnswers': collectAnswers('overallQuestions')
-        }
-    };
-    
     try {
-        // 在实际应用中，这里需要创建一个新的Airtable来存储记录
-        // 以下代码仅为示例，需要根据实际Airtable结构调整
-        alert('记录保存功能需要配置Airtable的记录表，当前为演示状态');
-        console.log('记录数据:', recordData);
+        const airtable = getAirtableClient();
         
-        // 生成新的记录编号
+        const recordData = {
+            RecordNo: document.getElementById('recordNo').value,
+            Date: document.getElementById('recordDate').value,
+            CandidateName: candidateName,
+            Position: document.getElementById('candidatePosition').value,
+            Interviewer: document.getElementById('interviewer').value,
+            Method: document.getElementById('interviewMethod').value,
+            Interviewee: document.getElementById('interviewee').value,
+            Relationship: document.getElementById('relationship').value,
+            PoliticalAnswers: collectAnswers('politicalQuestions'),
+            AbilityAnswers: collectAnswers('abilityQuestions'),
+            StyleAnswers: collectAnswers('styleQuestions'),
+            PersonalityAnswers: collectAnswers('personalityQuestions'),
+            LifeAnswers: collectAnswers('lifeQuestions'),
+            OverallAnswers: collectAnswers('overallQuestions'),
+            Notes: document.getElementById('notes').value
+        };
+        
+        await airtable.createRecord(config.airtable.tables.records, recordData);
+        alert('记录保存成功');
         generateRecordNo();
         
     } catch (error) {
-        console.error('保存记录失败:', error);
-        alert('保存记录失败，请检查网络连接和Airtable配置');
+        showError('保存记录失败', error);
     }
 }
 
@@ -228,21 +298,25 @@ function collectAnswers(sectionId) {
     return answers.join('\n\n');
 }
 
-// 打开问题管理模态框
+// 管理问题
 function manageQuestions() {
     const modal = document.getElementById('questionModal');
     modal.style.display = 'block';
-    openTab('addTab'); // 默认打开添加标签页
+    openTab(null, 'addTab');
+    loadQuestionList();
 }
 
 // 关闭模态框
 function closeModal() {
-    const modal = document.getElementById('questionModal');
-    modal.style.display = 'none';
+    document.getElementById('questionModal').style.display = 'none';
 }
 
 // 切换标签页
-function openTab(tabId) {
+function openTab(event, tabId) {
+    if (event) {
+        tabId = event.target.getAttribute('onclick').match(/'([^']+)'/)[1];
+    }
+    
     // 隐藏所有标签内容
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active-tab');
@@ -257,53 +331,40 @@ function openTab(tabId) {
     document.getElementById(tabId).classList.add('active-tab');
     
     // 设置活动标签按钮
-    event.target.classList.add('active');
-    
-    // 如果是查看标签，加载问题列表
-    if (tabId === 'viewTab') {
-        loadQuestionList();
+    if (event) {
+        event.target.classList.add('active');
+    } else {
+        document.querySelector(`.tab-btn[onclick*="${tabId}"]`).classList.add('active');
     }
 }
 
-// 添加问题到Airtable
+// 添加问题
 async function addQuestion() {
     const category = document.getElementById('questionCategory').value;
+    const name = document.getElementById('questionName').value.trim();
     const text = document.getElementById('questionText').value.trim();
     
-    if (!text) {
-        alert('请输入问题内容');
-        return;
-    }
-    
-    // 检查Airtable配置
-    if (!settings.airtableApiKey || !settings.airtableBaseId) {
-        alert('请先在设置中配置Airtable API信息');
-        toggleSettings();
+    if (!name || !text) {
+        alert('请填写问题名称和内容');
         return;
     }
     
     try {
-        const url = `https://api.airtable.com/v0/${settings.airtableBaseId}/${settings.airtableTableName}`;
+        const airtable = getAirtableClient();
         
-        const response = await axios.post(url, {
-            fields: {
-                'Category': category,
-                'Text': text
-            }
-        }, {
-            headers: {
-                'Authorization': `Bearer ${settings.airtableApiKey}`,
-                'Content-Type': 'application/json'
-            }
+        await airtable.createRecord(config.airtable.tables.questions, {
+            Name: name,
+            Category: category,
+            Text: text
         });
         
         alert('问题添加成功');
+        document.getElementById('questionName').value = '';
         document.getElementById('questionText').value = '';
-        loadQuestionList(); // 刷新问题列表
+        loadQuestionList();
         
     } catch (error) {
-        console.error('添加问题失败:', error);
-        alert('添加问题失败，请检查网络连接和Airtable配置');
+        showError('添加问题失败', error);
     }
 }
 
@@ -314,40 +375,27 @@ async function loadQuestionList() {
     questionList.innerHTML = '<p>加载中...</p>';
     
     try {
-        const questions = await fetchQuestionsFromAirtable();
-        let allQuestions = [];
-        
-        // 将问题从对象转换为数组
-        for (const category in questions) {
-            questions[category].forEach(q => {
-                allQuestions.push({
-                    id: q.id,
-                    category: category,
-                    text: q.text
-                });
-            });
-        }
+        const airtable = getAirtableClient();
+        const questions = await airtable.getRecords(config.airtable.tables.questions);
         
         // 过滤问题
-        if (filter !== 'all') {
-            allQuestions = allQuestions.filter(q => q.category === filter);
-        }
+        const filteredQuestions = filter === '全部' 
+            ? questions 
+            : questions.filter(q => q.fields.Category === filter);
         
-        // 显示问题
-        if (allQuestions.length === 0) {
+        if (filteredQuestions.length === 0) {
             questionList.innerHTML = '<p>暂无问题</p>';
             return;
         }
         
         questionList.innerHTML = '';
-        allQuestions.forEach(q => {
-            const categoryName = getCategoryName(q.category);
+        filteredQuestions.forEach(q => {
             const item = document.createElement('div');
             item.className = 'question-list-item';
             item.innerHTML = `
                 <div>
-                    <span class="question-category">${categoryName}</span>
-                    ${q.text}
+                    <span class="question-category">${q.fields.Category}</span>
+                    <strong>${q.fields.Name}</strong>: ${q.fields.Text}
                 </div>
                 <button class="delete-btn" onclick="deleteQuestion('${q.id}')">删除</button>
             `;
@@ -355,27 +403,9 @@ async function loadQuestionList() {
         });
         
     } catch (error) {
-        console.error('加载问题列表失败:', error);
-        questionList.innerHTML = '<p>加载失败，请检查Airtable配置</p>';
+        showError('加载问题列表失败', error);
+        questionList.innerHTML = '<p>加载失败</p>';
     }
-}
-
-// 获取类别名称
-function getCategoryName(category) {
-    const names = {
-        political: '政治素质',
-        ability: '工作能力',
-        style: '工作作风',
-        personality: '性格特点',
-        life: '生活作风',
-        overall: '综合评价'
-    };
-    return names[category] || category;
-}
-
-// 过滤问题列表
-function filterQuestions() {
-    loadQuestionList();
 }
 
 // 删除问题
@@ -385,27 +415,29 @@ async function deleteQuestion(questionId) {
     }
     
     try {
-        const url = `https://api.airtable.com/v0/${settings.airtableBaseId}/${settings.airtableTableName}/${questionId}`;
-        
-        await axios.delete(url, {
-            headers: {
-                'Authorization': `Bearer ${settings.airtableApiKey}`
-            }
-        });
-        
+        const airtable = getAirtableClient();
+        await airtable.deleteRecord(config.airtable.tables.questions, questionId);
         alert('问题删除成功');
-        loadQuestionList(); // 刷新问题列表
-        
+        loadQuestionList();
     } catch (error) {
-        console.error('删除问题失败:', error);
-        alert('删除问题失败，请检查网络连接和Airtable配置');
+        showError('删除问题失败', error);
     }
+}
+
+// 过滤问题列表
+function filterQuestions() {
+    loadQuestionList();
+}
+
+// 显示错误
+function showError(message, error) {
+    console.error(message, error);
+    alert(`${message}: ${error.message}`);
 }
 
 // 点击模态框外部关闭
 window.onclick = function(event) {
-    const modal = document.getElementById('questionModal');
-    if (event.target === modal) {
-        modal.style.display = 'none';
+    if (event.target === document.getElementById('questionModal')) {
+        closeModal();
     }
 };

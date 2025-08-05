@@ -275,7 +275,8 @@ body {
 }
 
 .form-group select, 
-.form-group textarea {
+.form-group textarea,
+.form-group input {
     width: 100%;
     padding: 8px;
     border: 1px solid #ddd;
@@ -339,4 +340,14 @@ body {
         border: none;
         min-height: 50px;
     }
+}
+
+/* 错误提示样式 */
+.error-message {
+    color: #e74c3c;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #e74c3c;
+    border-radius: 4px;
+    background-color: #fdecea;
 }
