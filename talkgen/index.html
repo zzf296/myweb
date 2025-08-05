@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事业单位招聘考察系统</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="header">
+        <h1>事业单位招聘工作人员综合考察谈话记录</h1>
+        <div class="settings-btn" onclick="toggleSettings()">⚙️ 设置</div>
+    </div>
+    
+    <div class="settings-panel" id="settingsPanel">
+        <h3>系统设置</h3>
+        <div class="setting-item">
+            <label>每类问题数量:</label>
+            <input type="number" id="questionsPerCategory" min="1" max="5" value="3">
+        </div>
+        <div class="setting-item">
+            <label>Airtable API Key:</label>
+            <input type="password" id="airtableApiKey" placeholder="输入你的Airtable API Key">
+        </div>
+        <div class="setting-item">
+            <label>Airtable Base ID:</label>
+            <input type="text" id="airtableBaseId" placeholder="输入你的Airtable Base ID">
+        </div>
+        <div class="setting-item">
+            <label>问题表名称:</label>
+            <input type="text" id="airtableTableName" value="Questions" placeholder="问题表名称">
+        </div>
+        <button onclick="saveSettings()">保存设置</button>
+        <button onclick="manageQuestions()">管理问题库</button>
+    </div>
+
+    <div class="container">
+        <div class="info-section">
+            <div class="info-grid">
+                <div class="info-item">
+                    <label for="recordNo">记录编号：</label>
+                    <input type="text" id="recordNo" readonly>
+                </div>
+                <div class="info-item">
+                    <label for="recordDate">考察日期：</label>
+                    <input type="date" id="recordDate">
+                </div>
+                <div class="info-item">
+                    <label for="candidateName">考察对象：</label>
+                    <input type="text" id="candidateName" placeholder="请输入姓名">
+                </div>
+                <div class="info-item">
+                    <label for="candidatePosition">应聘岗位：</label>
+                    <input type="text" id="candidatePosition" placeholder="请输入岗位名称">
+                </div>
+                <div class="info-item">
+                    <label for="interviewer">考察人员：</label>
+                    <input type="text" id="interviewer" placeholder="请输入姓名">
+                </div>
+                <div class="info-item">
+                    <label for="interviewMethod">考察方式：</label>
+                    <select id="interviewMethod">
+                        <option value="faceToFace">面对面谈话</option>
+                        <option value="phone">电话访谈</option>
+                        <option value="video">视频访谈</option>
+                    </select>
+                </div>
+                <div class="info-item">
+                    <label for="interviewee">被访谈人：</label>
+                    <input type="text" id="interviewee" placeholder="请输入姓名">
+                </div>
+                <div class="info-item">
+                    <label for="relationship">与考察对象关系：</label>
+                    <input type="text" id="relationship" placeholder="如：同事、领导、邻居等">
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-title">一、政治素质与道德品质</div>
+        <div id="politicalQuestions"></div>
+        
+        <div class="section-title">二、工作能力与业务水平</div>
+        <div id="abilityQuestions"></div>
+        
+        <div class="section-title">三、工作作风与廉洁自律</div>
+        <div id="styleQuestions"></div>
+        
+        <div class="section-title">四、性格特点与团队协作</div>
+        <div id="personalityQuestions"></div>
+        
+        <div class="section-title">五、生活作风与社交关系</div>
+        <div id="lifeQuestions"></div>
+        
+        <div class="section-title">六、综合评价</div>
+        <div id="overallQuestions"></div>
+        
+        <div class="signature-area">
+            <div class="signature-box">
+                <p>考察对象签字：</p>
+                <p class="signature-line"></p>
+                <p class="signature-date">日期：</p>
+            </div>
+            <div class="signature-box">
+                <p>考察人员签字：</p>
+                <p class="signature-line"></p>
+                <p class="signature-date">日期：</p>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button class="btn generate-btn" onclick="generateQuestions()">生成考察提纲</button>
+            <button class="btn save-btn" onclick="saveRecord()">保存记录到Airtable</button>
+            <button class="btn print-btn" onclick="window.print()">打印记录</button>
+        </div>
+    </div>
+
+    <!-- 问题管理模态框 -->
+    <div class="modal" id="questionModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>管理问题库</h2>
+            <div class="modal-tabs">
+                <button class="tab-btn active" onclick="openTab('addTab')">添加问题</button>
+                <button class="tab-btn" onclick="openTab('viewTab')">查看问题</button>
+            </div>
+            
+            <div id="addTab" class="tab-content active-tab">
+                <div class="form-group">
+                    <label>问题类别:</label>
+                    <select id="questionCategory">
+                        <option value="political">政治素质与道德品质</option>
+                        <option value="ability">工作能力与业务水平</option>
+                        <option value="style">工作作风与廉洁自律</option>
+                        <option value="personality">性格特点与团队协作</option>
+                        <option value="life">生活作风与社交关系</option>
+                        <option value="overall">综合评价</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>问题内容:</label>
+                    <textarea id="questionText" rows="3" placeholder="输入问题内容，可用[考察对象]作为占位符"></textarea>
+                </div>
+                <button onclick="addQuestion()">添加问题</button>
+            </div>
+            
+            <div id="viewTab" class="tab-content">
+                <div class="filter-group">
+                    <label>筛选类别:</label>
+                    <select id="filterCategory" onchange="filterQuestions()">
+                        <option value="all">全部类别</option>
+                        <option value="political">政治素质与道德品质</option>
+                        <option value="ability">工作能力与业务水平</option>
+                        <option value="style">工作作风与廉洁自律</option>
+                        <option value="personality">性格特点与团队协作</option>
+                        <option value="life">生活作风与社交关系</option>
+                        <option value="overall">综合评价</option>
+                    </select>
+                </div>
+                <div class="question-list" id="questionList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
